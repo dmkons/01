@@ -22,6 +22,18 @@
 *.cmd_log
 *_beh.prj
 *.ncd
+*.syr
+*.xst
+*.xrpt
+*.prj
+*.spl
+*.ngc
+*.ngr
+__Previews/
+*.sym
+webtalk_pn.xml
+iseconfig
+
 isim
 db
 incremental_db
@@ -34,6 +46,7 @@ webtalk_impact.xml
 pepExtractor.prj
 impact.xsl
 impact_impact.xwbt
+
 
 #ignore OS noise
 
