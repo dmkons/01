@@ -31,7 +31,7 @@ use ieee.numeric_std.all;
 --use UNISIM.VComponents.all;
 
 entity adder is
-generic (N: natural);    
+generic (N: natural);
 	port(
 		X	: in	STD_LOGIC_VECTOR(N-1 downto 0);
 		Y	: in	STD_LOGIC_VECTOR(N-1 downto 0);
