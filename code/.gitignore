@@ -33,6 +33,7 @@ __Previews/
 *.sym
 webtalk_pn.xml
 iseconfig
+*.gise
 
 isim
 db
