@@ -17,4 +17,4 @@ Luckily, the knowledge acquired when working on the computer project is at least
 ## This is a weak progress report
 
 Yes, we know that this is a weak progress report.
-Don't worry, we will put in a lot of effort later until the final deadline.
+Don't worry, we will put in a lot of effort before the final deadline.
