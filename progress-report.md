@@ -22,8 +22,3 @@ Luckily, the knowledge acquired when working on the computer project is at least
 
 We are going to try to implement the minimum requirements first, and then, if we have time, we will try to implement more.
 The final goal is to implement the entire basic MIPS architecture (sans the optional coprocessor instructions, and the syscall instruction).
-
-## This is a weak progress report
-
-Yes, we know that this is a weak progress report.
-Don't worry, we will put in a lot of effort before the final deadline.
