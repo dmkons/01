@@ -18,6 +18,11 @@ Luckily, the knowledge acquired when working on the computer project is at least
 * We have deleted a whole lot of auto-generated comments from ISE
 * We have written this progress report.
 
+## Goals we want to reach
+
+We are going to try to implement the minimum requirements first, and then, if we have time, we will try to implement more.
+The final goal is to implement the entire basic MIPS architecture (sans the optional coprocessor instructions, and the syscall instruction).
+
 ## This is a weak progress report
 
 Yes, we know that this is a weak progress report.
