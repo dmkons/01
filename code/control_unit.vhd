@@ -1,6 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use opcodes.all;
+use work.opcodes.all;
 
 entity control_unit is
     Port ( 
@@ -60,7 +60,7 @@ begin
 			next_state <= fetch;
 			
 			case instruction is
-				when OPCODE_R =>
+				when OPCODE_R_ALL =>
 						alu_operation <= '1';
 						register_destination <= '1';
 						register_write <= '1';
@@ -108,7 +108,8 @@ begin
 				when OPCODE_J
 					| OPCODE_JAL =>
 						jump <= '1';
-					
+				
+				when others => 
 			end case;
 					
     

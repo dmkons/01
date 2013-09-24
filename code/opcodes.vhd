@@ -56,4 +56,6 @@ constant FUNCTION_SUB : std_logic_vector(5 downto 0) := "100010";
 constant FUNCTION_SUBU : std_logic_vector(5 downto 0) := "100011";
 constant FUNCTION_SYSCALL : std_logic_vector(5 downto 0) := "001100";
 constant FUNCTION_XOR : std_logic_vector(5 downto 0) := "100110";
+
+constant FUNCTION_PASSTHROUGH : std_logic_vector(5 downto 0) := "111111";
 end opcodes;
