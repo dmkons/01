@@ -70,6 +70,7 @@ begin
 					| OPCODE_ANDI
 					| OPCODE_ORI
 					| OPCODE_XORI
+					| OPCODE_LUI
 					| OPCODE_SLTI
 					| OPCODE_SLTIU =>
 						alu_operation <= '1';
@@ -94,8 +95,6 @@ begin
 						alu_source <= '1';
 						register_write <= '1';
 						next_state <= stall;
-						
-					-- | OPCODE_LUI
 					
 				when OPCODE_SB
 					| OPCODE_SH
