@@ -13,6 +13,7 @@ Luckily, the knowledge acquired when working on the computer project is at least
 * We have made a program counter.
 * We have written a component overview
 * We have implemented the control unit
+* We have implemented a MUX
 * We have implemented an alu control component
 * We have deleted a whole lot of auto-generated comments from ISE
 * We have written this progress report.
