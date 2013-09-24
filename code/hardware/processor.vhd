@@ -19,6 +19,7 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use WORK.MIPS_CONSTANT_PKG.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -49,7 +50,7 @@ entity processor is
 	);
 end processor;
 
-architecture Behavioral of processor is
+architecture behavioral of processor is
 
 	
 	-- I guess the ALU is used for stuff?
@@ -63,7 +64,7 @@ architecture Behavioral of processor is
 		Y			: in STD_LOGIC_VECTOR(N-1 downto 0);
 		ALU_IN	    : in ALU_INPUT;
 		R			: out STD_LOGIC_VECTOR(N-1 downto 0);
-		FLAGS		: out ALU_FLAGS
+		FLAGS		: out alu_flags
 		);
 	end component;
 		
@@ -81,7 +82,10 @@ architecture Behavioral of processor is
 		);
 	end component;
 	
-    component PC is 
+    component PC is
+		generic (
+			N: integer := MEM_DATA_BUS
+		);
         port (
             CLK     : in STD_LOGIC;
             pc_in   : in  STD_LOGIC_VECTOR (N-1 downto 0);
@@ -125,8 +129,30 @@ architecture Behavioral of processor is
 			RT				:	out	STD_LOGIC_VECTOR (M-1 downto 0)
         );
     end component;
+	 
+	 
+	 -- the control unit
+	 component control_unit is
+	 
+	 port (
+			  clock : in std_logic;
+			  instruction : in std_logic_vector(5 downto 0);
+			  reset : in std_logic;
+				
+           register_destination : out std_logic;
+			  branch : out std_logic;
+			  memory_read : out std_logic;
+			  memory_to_register : out std_logic;
+			  alu_operation : out std_logic;
+			  memory_write : out std_logic; 
+			  alu_source : out std_logic;
+			  register_write : out std_logic;
+			  jump : out std_logic
+	 );
+	 end component;
             
-    
+    signal read_data_1, read_data_2, alu1_result : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+	 signal alu_in : alu_input;
 	
 begin
 
@@ -135,12 +161,13 @@ begin
 	ALU1: alu generic map (N=>MEM_DATA_BUS)
 		-- the ALU between Registers and Data memory on the suggested architecture
 		port map (
-			X => ReadData1,
-			Y => ReadData2,
-			R => ALU1_Result
+			X => read_data_1,
+			Y => read_data_2,
+			R => alu1_result,
+			ALU_IN => alu_in
 		);
 	
 
 		
-end Behavioral;
+end behavioral;
 
