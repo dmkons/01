@@ -135,7 +135,7 @@ begin
 	ALU1: alu generic map (N=>MEM_DATA_BUS)
 		-- the ALU between Registers and Data memory on the suggested architecture
 		port map (
-			X => ,
+			X => ReadData1,
 			Y => ReadData2,
 			R => ALU1_Result
 		);
