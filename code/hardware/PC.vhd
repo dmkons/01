@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity PC is
-    generic (N :NATURAL;);
+    generic (N :NATURAL);
     Port ( CLK	: in  STD_LOGIC;
 			  pc_in : in  STD_LOGIC_VECTOR (N-1 downto 0);
            pc_out : out  STD_LOGIC_VECTOR (N-1 downto 0));
