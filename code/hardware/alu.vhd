@@ -1,101 +1,58 @@
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL;
-
-library WORK;
-use WORK.MIPS_CONSTANT_PKG.ALL;
+library ieee;
+use ieee.std_logic_164.all;
+use ieee.numeric_std.all;
 
 entity alu is
-	generic (N: NATURAL);
-	port(
-		X			: in STD_LOGIC_VECTOR(N-1 downto 0);
-		Y			: in STD_LOGIC_VECTOR(N-1 downto 0);
-		ALU_IN	: in ALU_INPUT;
-		R			: out STD_LOGIC_VECTOR(N-1 downto 0);
-		FLAGS		: out ALU_FLAGS
-	);
-end alu;
+port ( 
+    signal clk   : in  std_logic;
+    signal a     : in  std_logic_vector(31 downto 0);
+    signal b     : in  std_logic_vector(31 downto 0);
+    signal y     : in  std_logic_vector(31 downto 0);
+    signal op    : in  std_logic_vector(3  downto 0);
+    signal nul   : out boolean;
+    signal cout  : out std_logic
+)
+end entity;
 
-architecture Behavioral of alu is
-
-	component ALU_1BIT is 
-		port(
-			X		: in STD_LOGIC;
-			Y		: in STD_LOGIC;
-			LESS	: in STD_LOGIC;
-			BINVERT : in STD_LOGIC;
-			CIN	: in STD_LOGIC;
-			OP1	: in STD_LOGIC;
-			OP0	: in STD_LOGIC;
-			RES	: out STD_LOGIC;
-			COUT	: out STD_LOGIC;
-			SET	: out STD_LOGIC
-		);
-	end component ALU_1BIT;
-
-	signal LESS_AUX : STD_LOGIC; 
-	signal COUT_AUX : STD_LOGIC_VECTOR(N-1 downto 0);
-	signal R_AUX	: STD_LOGIC_VECTOR(N-1 downto 0);
-	
+architecture behavioral of alu is
 begin
 
-	BEGIN_ALU1B:
-		ALU_1BIT port map (
-				X	=> X(0),
-				Y	=> Y(0),
-				LESS	=> LESS_AUX,
-				BINVERT => ALU_IN.Op2,
-				CIN	=> ALU_IN.Op2,
-				OP1	=> ALU_IN.Op1,
-				OP0	=> ALU_IN.Op0,					
-				RES	=> R_AUX(0),
-				COUT	=> COUT_AUX(0)
-		);
-								
-	GEN_ALU:
-		for i in 1 to N-2 generate
-			NEXT_ALU1B:
-				ALU_1BIT port map (
-					X	=> X(i),
-					Y	=> Y(i),
-					LESS	=> '0',
-					BINVERT => ALU_IN.Op2,
-					CIN	=> COUT_AUX(i-1),
-					OP1	=> ALU_IN.Op1,
-					OP0	=> ALU_IN.Op0,
-					RES	=> R_AUX(i),
-					COUT	=> COUT_AUX(i)
-				);
-		end generate;
+   process(op)
+   begin
+      case op is
+      when "000" => enum_op <= op_and;
+      when "001" => enum_op <= op_xor;
+      when "010" => enum_op <= op_add;
+      when "100" => enum_op <= op_a_and_nb;
+      when "101" => enum_op <= op_a_xor_nb;
+      when "110" => enum_op <= op_sub;
+      when "111" => enum_op <= op_compare;
+      when others => enum_op <= op_nop;
+      end case;
+   end process;
 
-	LAST_ALU1B:
-		ALU_1BIT port map (
-			X	=> X(N-1),
-			Y	=> Y(N-1),
-			LESS	=> '0',
-			BINVERT => ALU_IN.Op2,
-			CIN	=> COUT_AUX(N-2),
-			OP1	=> ALU_IN.Op1,
-			OP0	=> ALU_IN.Op0,
-			RES	=> R_AUX(N-1),
-			COUT	=> COUT_AUX(N-1),
-			SET	=> LESS_AUX
-		);
-			
-	FLAGS.Carry <= COUT_AUX(N-1);
-	FLAGS.Overflow <= COUT_AUX(N-1) xor COUT_AUX(N-2) ;
-	FLAGS.Negative <= '1' when R_AUX(N-1)='1' else '0';
-	FLAGS.Zero <= '1' when R_AUX= ZERO32b else '0';
+   process(clk)
+   begin
+      if rising_edge(clk) then
+      
+         case enum_op is
+         when op_add       => reg <= a_plus_b;
+         when op_sub       => reg <= a_minus_b;
+         when op_and       => reg <= '0' & (a and b);
+         when op_xor       => reg <= '0' & (a xor b);
+         when op_a_and_nb  => reg <= '0' & (a and not b);
+         when op_a_xor_nb  => reg <= '0' & (a xor not b);
+         when op_compare   => 
+            reg(32) <= '0';
+            reg(31 downto 1) <= (others => '0'); 
+            reg(0)  <= a_minus_b(32);
+         when op_nop       =>
+            reg(32) <= '0';
+      end if;
+   end process;
 
-	ALU_RES:
-		process(ALU_IN.Op3,R_AUX,Y)
-		begin
-			if  ALU_IN.Op3='1' then
-				R <= Y( ((N/2)-1) downto 0) & ZERO16b;
-			else
-				R <= R_AUX;
-			end if;
-		end process;
+   y <= reg(31 downto 0);
+   count <= reg(32);
+   nul <= unsigned(reg) = '0';
 
-end Behavioral;
-
+end architecture;
