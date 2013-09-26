@@ -59,7 +59,6 @@
       <association xil_pn:name="BehavioralSimulation"/>
       <association xil_pn:name="Implementation"/>
     </file>
-    <file xil_pn:name="PC.vhd" xil_pn:type="FILE_VHDL">
     <file xil_pn:name="hardware/PC.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation"/>
     </file>
@@ -385,11 +384,7 @@
     <!--                                                                                  -->
     <!-- The following properties are for internal use only. These should not be modified.-->
     <!--                                                                                  -->
-<<<<<<< HEAD
-    <property xil_pn:name="PROP_BehavioralSimTop" xil_pn:value="Architecture|adder|Behavioral" xil_pn:valueState="non-default"/>
-=======
     <property xil_pn:name="PROP_BehavioralSimTop" xil_pn:value="Architecture|toplevel|Behavioral" xil_pn:valueState="non-default"/>
->>>>>>> 404de84c2f205a8df4fbf4470aabfbd2a25bd65e
     <property xil_pn:name="PROP_DesignName" xil_pn:value="code" xil_pn:valueState="non-default"/>
     <property xil_pn:name="PROP_DevFamilyPMName" xil_pn:value="spartan6" xil_pn:valueState="default"/>
     <property xil_pn:name="PROP_FPGAConfiguration" xil_pn:value="FPGAConfiguration" xil_pn:valueState="default"/>
