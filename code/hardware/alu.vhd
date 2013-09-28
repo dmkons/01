@@ -11,9 +11,7 @@ port (
     signal y : in  signed(31 downto 0);
     signal r : out  signed(31 downto 0);
     signal func : in std_logic_vector(6  downto 0);
-	 signal flags : out alu_flags;
-    signal nul : out boolean;
-    signal cout : out std_logic
+	 signal flags : out alu_flags
 );
 end entity;
 
@@ -33,7 +31,9 @@ begin
 					flags.overflow <= r_wide(32);
 				
 				when FUNCTION_ADDU =>
+					r_wide <= ('0' & x) + ('0' & y);
 					r <= x + y;
+					flags.overflow <= r_wide(32);
 					
 				when FUNCTION_AND =>
 					r <= x and y;
@@ -45,17 +45,17 @@ begin
 					r <= x / y;
 
 				when FUNCTION_DIVU =>
-					r <= x / y;
+					r <= signed(unsigned(x) / unsigned(y));
 
 				when FUNCTION_JALR =>
 
 				when FUNCTION_JR =>
 
 				when FUNCTION_MULT =>
-					r <= x * y;
+					r <= (x * y)(31 downto 0);
 
 				when FUNCTION_MULTU =>
-					r <= x * y;
+					r <= (unsigned(x) * unsigned(y))(31 downto 0);
 
 				when FUNCTION_NOR =>
 					r <= x nor y;
@@ -70,7 +70,13 @@ begin
 					r <= unsigned(shift_left(unsigned(x), to_integer(y)));
 
 				when FUNCTION_SLT =>
+					if b > 0 then
+						r <= '1';
+					end if;
 				when FUNCTION_SLTU =>
+					if unsigned(b) > 0 then
+						r <= '1';
+					end if;
 				
 				when FUNCTION_SRA =>
 					r <= shift_right(x, to_integer(y));
@@ -86,7 +92,7 @@ begin
 					r <= x - y;
 
 				when FUNCTION_SUBU =>
-					r <= x - y;
+					r <= signed(unsigned(x) - unsigned(y));
 
 				when FUNCTION_XOR =>
 					r <= x xor y;
