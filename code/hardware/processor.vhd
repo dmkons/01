@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.numeric_std.all;
 use WORK.MIPS_CONSTANT_PKG.ALL;
 
 entity processor is
@@ -32,10 +33,10 @@ architecture behavioral of processor is
 			N: integer := MEM_DATA_BUS
 		);
 		port (
-		X			: in STD_LOGIC_VECTOR(N-1 downto 0);
-		Y			: in STD_LOGIC_VECTOR(N-1 downto 0);
+		X			: in signed(N-1 downto 0);
+		Y			: in signed(N-1 downto 0);
 		ALU_IN	    : in ALU_INPUT;
-		R			: out STD_LOGIC_VECTOR(N-1 downto 0);
+		R			: out signed(N-1 downto 0);
 		FLAGS		: out alu_flags
 		);
 	end component;
@@ -123,7 +124,6 @@ architecture behavioral of processor is
 	 end component;
             
      
-     
      -- "Registers" read data signals
      signal read_data_1, read_data_2 : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      
@@ -158,6 +158,8 @@ architecture behavioral of processor is
         jump, shift_swap : std_logic;
      
 
+    signal read_data_1, read_data_2, alu1_result : signed(MEM_DATA_BUS-1 downto 0);
+	 signal alu_in : alu_input;
 	
 begin
 
