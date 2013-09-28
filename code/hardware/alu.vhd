@@ -64,10 +64,10 @@ begin
 					r <= x or y;
 
 				when FUNCTION_SLL =>
-					r <= shift_left(x, to_integer(y));
+					r <= signed(shift_left(unsigned(x), to_integer(y)));
 
 				when FUNCTION_SLLV =>
-					r <= shift_left(x, to_integer(y));
+					r <= unsigned(shift_left(unsigned(x), to_integer(y)));
 
 				when FUNCTION_SLT =>
 				when FUNCTION_SLTU =>
@@ -78,7 +78,7 @@ begin
 				when FUNCTION_SRAV =>
 					
 				when FUNCTION_SRL =>
-					r <= shift_right(x, to_integer(y));
+					r <= signed(shift_right(unsigned(x), to_integer(y)));
 
 				when FUNCTION_SRLV =>
 
