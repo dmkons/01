@@ -126,6 +126,13 @@ architecture behavioral of processor is
     signal read_data_1, read_data_2, alu1_result, instruction : std_logic_vector(MEM_DATA_BUS-1 downto 0);
 	 signal pc_in, pc_out : std_logic_vector(MEM_ADDR_BUS-1 downto 0);
 	 signal alu_in : alu_input;
+	 -- Defining aliases for the different parts of the instruction signal
+	 alias instruction_concat is instruction(25 downto 0)
+	 alias instruction_register_addr_1 is instruction(25 downto 21)
+	 alias instruction_register_addr_2 is instruction(20 downto 16)
+	 alias instruction_register_addr_3 is instruction(15 downto 11)
+	 alias instruction_sign_extend is instruction(15 downto 0)
+	 alias instruction_alu_controll is instruction(5 downto 0)
 	
 begin
 
@@ -158,24 +165,6 @@ begin
 			ADDR => pc_out
 			READ_DATA => instruction
 	);
-	
-	
-	
-	component memory is 
-		generic (
-			N: natural := MEM_DATA_BUS;
-			M: natural := MEM_ADDR_BUS
-		);
-		port (
-			CLK		    	:   in STD_LOGIC;
-			RESET			:	in  STD_LOGIC;	
-			W_ADDR		    :	in  STD_LOGIC_VECTOR (M-1 downto 0);	-- Address to write data
-			WRITE_DATA	    :	in  STD_LOGIC_VECTOR (N-1 downto 0);	-- Data to be written
-			MemWrite		:	in  STD_LOGIC;							-- Write Signal
-			ADDR			:	in  STD_LOGIC_VECTOR (M-1 downto 0);	-- Address to access data
-			READ_DATA	    :	out STD_LOGIC_VECTOR (N-1 downto 0)		-- Data read from memory
-		);
-	end component;
 		
 end behavioral;
 
