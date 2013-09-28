@@ -1,58 +1,103 @@
 library ieee;
-use ieee.std_logic_164.all;
+use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.mips_constant_pkg.all;
+use work.opcodes.all;
 
 entity alu is
 port ( 
-    signal clk   : in  std_logic;
-    signal a     : in  std_logic_vector(31 downto 0);
-    signal b     : in  std_logic_vector(31 downto 0);
-    signal y     : in  std_logic_vector(31 downto 0);
-    signal op    : in  std_logic_vector(3  downto 0);
-    signal nul   : out boolean;
-    signal cout  : out std_logic
-)
+    signal clk : in  std_logic;
+    signal x : in  signed(31 downto 0);
+    signal y : in  signed(31 downto 0);
+    signal r : out  signed(31 downto 0);
+    signal func : in std_logic_vector(6  downto 0);
+	 signal flags : out alu_flags;
+    signal nul : out boolean;
+    signal cout : out std_logic
+);
 end entity;
 
 architecture behavioral of alu is
-begin
 
-   process(op)
-   begin
-      case op is
-      when "000" => enum_op <= op_and;
-      when "001" => enum_op <= op_xor;
-      when "010" => enum_op <= op_add;
-      when "100" => enum_op <= op_a_and_nb;
-      when "101" => enum_op <= op_a_xor_nb;
-      when "110" => enum_op <= op_sub;
-      when "111" => enum_op <= op_compare;
-      when others => enum_op <= op_nop;
-      end case;
-   end process;
+signal r_wide : signed (32 downto 0);
+
+begin
 
    process(clk)
    begin
       if rising_edge(clk) then
-      
-         case enum_op is
-         when op_add       => reg <= a_plus_b;
-         when op_sub       => reg <= a_minus_b;
-         when op_and       => reg <= '0' & (a and b);
-         when op_xor       => reg <= '0' & (a xor b);
-         when op_a_and_nb  => reg <= '0' & (a and not b);
-         when op_a_xor_nb  => reg <= '0' & (a xor not b);
-         when op_compare   => 
-            reg(32) <= '0';
-            reg(31 downto 1) <= (others => '0'); 
-            reg(0)  <= a_minus_b(32);
-         when op_nop       =>
-            reg(32) <= '0';
-      end if;
-   end process;
+         case func is
+				when FUNCTION_ADD =>
+					r_wide <= (x(31) & x) + (y(31) & y);
+					r <= r_wide(31 downto 0);
+					flags.overflow <= r_wide(32);
+				
+				when FUNCTION_ADDU =>
+					r <= x + y;
+					
+				when FUNCTION_AND =>
+					r <= x and y;
+					
+				when FUNCTION_BREAK =>
+					
 
-   y <= reg(31 downto 0);
-   count <= reg(32);
-   nul <= unsigned(reg) = '0';
+				when FUNCTION_DIV =>
+					r <= x / y;
+
+				when FUNCTION_DIVU =>
+					r <= x / y;
+
+				when FUNCTION_JALR =>
+
+				when FUNCTION_JR =>
+
+				when FUNCTION_MULT =>
+					r <= x * y;
+
+				when FUNCTION_MULTU =>
+					r <= x * y;
+
+				when FUNCTION_NOR =>
+					r <= x nor y;
+
+				when FUNCTION_OR =>
+					r <= x or y;
+
+				when FUNCTION_SLL =>
+					r <= shift_left(x, to_integer(y));
+
+				when FUNCTION_SLLV =>
+					r <= shift_left(x, to_integer(y));
+
+				when FUNCTION_SLT =>
+				when FUNCTION_SLTU =>
+				
+				when FUNCTION_SRA =>
+					r <= shift_right(x, to_integer(y));
+
+				when FUNCTION_SRAV =>
+					
+				when FUNCTION_SRL =>
+					r <= shift_right(x, to_integer(y));
+
+				when FUNCTION_SRLV =>
+
+				when FUNCTION_SUB =>
+					r <= x - y;
+
+				when FUNCTION_SUBU =>
+					r <= x - y;
+
+				when FUNCTION_XOR =>
+					r <= x xor y;
+					
+				when FUNCTION_PASSTHROUGH =>
+					r <= x;
+				
+				when others =>
+					null;
+			end case;
+		end if;
+   end process;
 
 end architecture;
