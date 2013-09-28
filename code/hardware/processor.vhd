@@ -56,7 +56,7 @@ architecture behavioral of processor is
 	
     component PC is
 		generic (
-			N: integer := MEM_ADDR_BUS
+			N: integer := MEM_DATA_BUS
 		);
         port (
             CLK     : in STD_LOGIC;
@@ -123,7 +123,7 @@ architecture behavioral of processor is
 	 );
 	 end component;
             
-    signal read_data_1, read_data_2, alu1_result : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+    signal read_data_1, read_data_2, alu1_result, instruction : std_logic_vector(MEM_DATA_BUS-1 downto 0);
 	 signal pc_in, pc_out : std_logic_vector(MEM_ADDR_BUS-1 downto 0);
 	 signal alu_in : alu_input;
 	
@@ -140,12 +140,42 @@ begin
 			ALU_IN => alu_in
 		);
 	
-	PC: pc generic map ( N=>MEM_ADDR_BUS)
+	PC: pc generic map ( N=>MEM_DATA_BUS)
 		port map (
 			CLK => clk
 			PC_IN => pc_out
 			PC_OUT => pc_out
 	);
+	
+	-- Instruction memory
+	MEMORY: memory generic map (M => MEM_ADDR_BUS; N => MEM_DATA_BUS)
+		port map (
+			CLK => CLK
+			RESET => reset
+			W_ADDR =>     --
+			WRITE_DATA => -- Hvordan og når skrives det til instruksjoneminne?
+			MemWrite =>   --
+			ADDR => pc_out
+			READ_DATA => instruction
+	);
+	
+	
+	
+	component memory is 
+		generic (
+			N: natural := MEM_DATA_BUS;
+			M: natural := MEM_ADDR_BUS
+		);
+		port (
+			CLK		    	:   in STD_LOGIC;
+			RESET			:	in  STD_LOGIC;	
+			W_ADDR		    :	in  STD_LOGIC_VECTOR (M-1 downto 0);	-- Address to write data
+			WRITE_DATA	    :	in  STD_LOGIC_VECTOR (N-1 downto 0);	-- Data to be written
+			MemWrite		:	in  STD_LOGIC;							-- Write Signal
+			ADDR			:	in  STD_LOGIC_VECTOR (M-1 downto 0);	-- Address to access data
+			READ_DATA	    :	out STD_LOGIC_VECTOR (N-1 downto 0)		-- Data read from memory
+		);
+	end component;
 		
 end behavioral;
 
