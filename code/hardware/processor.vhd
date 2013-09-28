@@ -56,12 +56,12 @@ architecture behavioral of processor is
 	
     component PC is
 		generic (
-			N: integer := MEM_DATA_BUS
+			N: integer := MEM_ADDR_BUS
 		);
         port (
             CLK     : in STD_LOGIC;
-            pc_in   : in  STD_LOGIC_VECTOR (N-1 downto 0);
-            pc_out  : out  STD_LOGIC_VECTOR (N-1 downto 0)
+            PC_IN   : in  STD_LOGIC_VECTOR (N-1 downto 0);
+            PC_OUT  : out  STD_LOGIC_VECTOR (N-1 downto 0)
         );
     end component;
     
@@ -124,6 +124,7 @@ architecture behavioral of processor is
 	 end component;
             
     signal read_data_1, read_data_2, alu1_result : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+	 signal pc_in, pc_out : std_logic_vector(MEM_ADDR_BUS-1 downto 0);
 	 signal alu_in : alu_input;
 	
 begin
@@ -139,7 +140,12 @@ begin
 			ALU_IN => alu_in
 		);
 	
-
+	PC: pc generic map ( N=>MEM_ADDR_BUS)
+		port map (
+			CLK => clk
+			PC_IN => pc_out
+			PC_OUT => pc_out
+	);
 		
 end behavioral;
 
