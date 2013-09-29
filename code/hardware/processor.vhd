@@ -122,10 +122,28 @@ architecture behavioral of processor is
 			  jump : out std_logic
 	 );
 	 end component;
-            
+         
+     -- all the multiplexors
+     -- (all them multiplexors)
+     component multiplexor is
+        generic (
+            N: natural := MEM_DATA_BUS
+        );
+        port (
+            CLK : in  STD_LOGIC;
+            MUX_ENABLE : in STD_LOGIC;
+            MUX_IN_0 : in  STD_LOGIC_VECTOR (N-1 downto 0);
+            MUX_IN_1 : in  STD_LOGIC_VECTOR (N-1 downto 0);
+            MUX_OUT : out  STD_LOGIC_VECTOR (N-1 downto 0)
+        );
+     end component --end multiplexorz 
+        
+        
+     
      
      -- "Registers" read data signals
-     signal read_data_1, read_data_2 : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+     signal read_data_1 : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+     signal read_data_2 : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      
      
      -- ALU1 signals
@@ -157,8 +175,10 @@ architecture behavioral of processor is
         alu_operation, alu_source, register_write,
         jump, shift_swap : std_logic;
      
+     -- mux signals
+     signal MUX_shift_swap_out : std_logic;
 
-    signal read_data_1, read_data_2, alu1_result : signed(MEM_DATA_BUS-1 downto 0);
+  --  signal read_data_1, read_data_2, alu1_result : signed(MEM_DATA_BUS-1 downto 0);
 	 signal alu_in : alu_input;
 	
 begin
@@ -186,7 +206,7 @@ begin
 	ALU1: alu generic map (N=>MEM_DATA_BUS)
 		-- the ALU between Registers and Data memory on the suggested architecture
 		port map (
-			X => read_data_1,
+			X => MUX_shift_swap_out,
 			Y => read_data_2,
 			R => alu1_result,
 			ALU_IN => alu_in
@@ -197,7 +217,16 @@ begin
 			CLK => clk,
 			PC_IN => pc_out,
 			PC_OUT => pc_out
-	);
+        );
+    
+    MUX_shift_swap: multiplexor
+        port map (
+            CLK => CLK,
+            MUX_ENABLE => shift_swap,
+            MUX_IN_0 => read_data_1,
+            MUX_IN_1 => read_data_2,
+            MUX_OUT => MUX_shift_swap_out
+        );
 	
 	-- Instruction memory
 	INSTRUCTION_MEMORY: memory generic map (M => MEM_ADDR_BUS; N => MEM_DATA_BUS)
@@ -209,7 +238,7 @@ begin
 			MemWrite =>   --
 			ADDR => pc_out,
 			READ_DATA => instruction
-	);
+        );
     
     -- Data Memory
     DATA_MEMORY: memory generic map (M => MEM_ADDR_BUS; N=> MEM_DATA_BUS)
@@ -221,7 +250,7 @@ begin
 			MemWrite =>   -- ???
 			ADDR => alu1_result, -- ALU1 result
 			READ_DATA => read_data -- outgoing data, should go to the MUX with the memtoReg flag going into it
-    );
+        );
 		
 end behavioral;
 
