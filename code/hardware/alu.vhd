@@ -10,28 +10,31 @@ port (
     signal x : in  signed(31 downto 0);
     signal y : in  signed(31 downto 0);
     signal r : out  signed(31 downto 0);
-    signal func : in std_logic_vector(6  downto 0);
+    signal func : in std_logic_vector(5  downto 0);
 	 signal flags : out alu_flags
 );
 end entity;
 
 architecture behavioral of alu is
 
-signal r_wide : signed (32 downto 0);
 
 begin
 
-   process(clk)
+   process(clk, x, y, func)
+       
+    -- used when we need a wider answer at first to determine flags
+    variable r_wide : signed (32 downto 0) := (others => '0');
+    -- used when we need a non-wide, but still readable answer to determine flags
+    variable r_readable : signed (31 downto 0) := (others => '0');
    begin
       if rising_edge(clk) then
          case func is
 				when FUNCTION_ADD =>
-					r <= x + y;
+					r_readable := x + y;
+                    r <= x + y;
 					flags.overflow <= '0';
-					if x(31) = y(31) then
-						if x(31) /= y(31) then
-							flags.overflow <= '1';
-						end if;
+					if x(31) = y(31) and x(31) /= r_readable(31) then
+						flags.overflow <= '1';
 					end if;
 					
 				
@@ -79,13 +82,13 @@ begin
 
 				when FUNCTION_SLT =>
 					if x > y then
-						r <= "1";
+						r <= "00000000000000000000000000000001";
 					end if;
 					
 					
 				when FUNCTION_SLTU =>
 					if unsigned(x) > unsigned(y) then
-						r <= "1";
+						r <= "00000000000000000000000000000001";
 					end if;
 				
 				
