@@ -187,7 +187,7 @@ begin
     );
 
 
-	ALU1: alu generic map (N=>MEM_DATA_BUS)
+	ALU: alu generic map (N=>MEM_DATA_BUS)
 		-- the ALU between Registers and Data memory on the suggested architecture
 		port map (
 			X => MUX_shift_swap_out,
