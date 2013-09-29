@@ -58,6 +58,7 @@ begin
 	memory_write <= '0';
 	alu_source <= '0';
 	register_write <= '0';
+    shift_swap <= '0';
 
 	case current_state is
 		when fetch =>
@@ -68,9 +69,16 @@ begin
 			
 			case instruction_opcode is
 				when OPCODE_R_ALL =>
-						alu_operation <= '1';
-						register_destination <= '1';
-						register_write <= '1';
+                    case instruction_func is 
+                        when FUNCTION_SLL -- shift logical cases
+                            | FUNCTION_SRL =>
+                            shift_swap <= '1';
+                        when others =>
+                        -- do nothing
+                     end case; -- end instruction_func
+                    alu_operation <= '1';
+                    register_destination <= '1';
+                    register_write <= '1';
 				
 				when OPCODE_ADDI
 					| OPCODE_ADDIU
@@ -122,7 +130,7 @@ begin
 	 when stall =>
 		next_state <= fetch;
 
-  end case;
+  end case; -- end instruction_opcode
 end process;
 
 
