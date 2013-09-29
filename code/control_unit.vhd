@@ -73,10 +73,12 @@ begin
                         when FUNCTION_SSL -- shift logical cases
                             | FUNCTION_SRL =>
                             shift_swap <= '1';
+                        when others =>
+                        -- do nothing
                      end case; -- end instruction_func
-						alu_operation <= '1';
-						register_destination <= '1';
-						register_write <= '1';
+                    alu_operation <= '1';
+                    register_destination <= '1';
+                    register_write <= '1';
 				
 				when OPCODE_ADDI
 					| OPCODE_ADDIU
