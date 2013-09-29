@@ -5,9 +5,9 @@ entity MUX is
     generic (N :NATURAL;);
     Port (  CLK : in  STD_LOGIC;
             MUX_ENABLE : in STD_LOGIC;
-            MUX_IN_0 : in  STD_LOGIC_VECTOR (0 downto N-1);
-            MUX_IN_1 : in  STD_LOGIC_VECTOR (0 downto N-1);
-            MUX_OUT : out  STD_LOGIC_VECTOR (0 downto N-1));
+            MUX_IN_0 : in  STD_LOGIC_VECTOR (N-1 downto 0);
+            MUX_IN_1 : in  STD_LOGIC_VECTOR (N-1 downto 0);
+            MUX_OUT : out  STD_LOGIC_VECTOR (N-1 downto 0));
 end MUX;
 
 architecture Behavioral of MUX is
