@@ -122,7 +122,7 @@ architecture behavioral of processor is
 	 );
 	 end component;
             
-
+     
      
      -- "Registers" read data signals
      signal read_data_1, read_data_2 : std_logic_vector(MEM_DATA_BUS-1 downto 0);
@@ -143,17 +143,40 @@ architecture behavioral of processor is
      signal instruction : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      
      -- Defining aliases for the different parts of the instruction signal
+     alias instruction_opcode is instruction(31 downto 26)
 	 alias instruction_concat is instruction(25 downto 0)
 	 alias instruction_register_addr_1 is instruction(25 downto 21)
 	 alias instruction_register_addr_2 is instruction(20 downto 16)
 	 alias instruction_register_addr_3 is instruction(15 downto 11)
 	 alias instruction_sign_extend is instruction(15 downto 0)
-	 alias instruction_alu_controll is instruction(5 downto 0)
+	 alias instruction_alu_control is instruction(5 downto 0)
+     
+     -- Control unit signals, see fig 4.2
+     signal register_destination, branch, memory_read,
+        memory_write, memory_to_register, 
+        alu_operation, alu_source, register_write,
+        jump, shift_swap : std_logic;
      
 
 	
 begin
 
+    CONTROL_UNIT: control_unit
+        port map (
+        reset => reset,
+        clock => CLK,
+        instruction => instruction_opcode,
+        
+        register_destination => register_destination,
+        branch => branch,
+        memory_read => memory_read,
+        memory_to_register => memory_to_register,
+        alu_operation => alu_operation,
+        alu_source => alu_source,
+        register_write => register_write,
+        jump => jump
+        
+    );
 
 
 	ALU1: alu generic map (N=>MEM_DATA_BUS)

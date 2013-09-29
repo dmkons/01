@@ -5,10 +5,14 @@ use work.opcodes.all;
 entity control_unit is
     Port ( 
 			  clock : in std_logic;
-			  instruction : in std_logic_vector(5 downto 0);
+			  instruction_opcode : in std_logic_vector(5 downto 0);
+              instruction_func : in std_logic_vector(5 downto 0);
+              
 			  reset : in std_logic;
+              
+              
 				
-           register_destination : out std_logic;
+              register_destination : out std_logic;
 			  branch : out std_logic;
 			  memory_read : out std_logic;
 			  memory_to_register : out std_logic;
@@ -16,8 +20,11 @@ entity control_unit is
 			  memory_write : out std_logic; 
 			  alu_source : out std_logic;
 			  register_write : out std_logic;
-			  jump : out std_logic -- I've added this because it looks like we need it,
+			  jump : out std_logic; -- I've added this because it looks like we need it,
 										  -- even though it is not on figure 4.2
+              shift_swap : out std_logic -- the control signal that sends read data 2 into ALU1 rather than read data 1
+              
+                                          
 	  );
 end control_unit;
 
@@ -39,7 +46,7 @@ begin
 end process;
 
 
-process (current_state, instruction)
+process (current_state, instruction_opcode)
 begin
 
 	-- set to defaults
@@ -59,7 +66,7 @@ begin
      when execute =>
 			next_state <= fetch;
 			
-			case instruction is
+			case instruction_opcode is
 				when OPCODE_R_ALL =>
 						alu_operation <= '1';
 						register_destination <= '1';
