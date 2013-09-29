@@ -127,24 +127,30 @@ architecture behavioral of processor is
      -- "Registers" read data signals
      signal read_data_1, read_data_2 : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      
-     -- Instruction Memory signals
-     signal instruction : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      
      -- ALU1 signals
      signal alu1_result : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+     signal alu_in : alu_input;
      
      
-             
+     -- Data Memory signals
+     signal read_data : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+     
+     -- PC signals
 	 signal pc_in, pc_out : std_logic_vector(MEM_ADDR_BUS-1 downto 0);
-	 signal alu_in : alu_input;
      
-	 -- Defining aliases for the different parts of the instruction signal
+     -- Instruction Memory signals
+     signal instruction : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+     
+     -- Defining aliases for the different parts of the instruction signal
 	 alias instruction_concat is instruction(25 downto 0)
 	 alias instruction_register_addr_1 is instruction(25 downto 21)
 	 alias instruction_register_addr_2 is instruction(20 downto 16)
 	 alias instruction_register_addr_3 is instruction(15 downto 11)
 	 alias instruction_sign_extend is instruction(15 downto 0)
 	 alias instruction_alu_controll is instruction(5 downto 0)
+     
+
 	
 begin
 
@@ -183,11 +189,11 @@ begin
         port map (
  			CLK => CLK,
 			RESET => reset,
-			W_ADDR =>     --
-			WRITE_DATA => -- registers read data
+			W_ADDR =>     -- ???
+			WRITE_DATA => read_data_2, -- from Registers' read data 2
 			MemWrite =>   -- ???
 			ADDR => alu1_result, -- ALU1 result
-			READ_DATA => 
+			READ_DATA => read_data -- outgoing data, should go to the MUX with the memtoReg flag going into it
     );
 		
 end behavioral;
