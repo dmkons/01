@@ -26,79 +26,104 @@ begin
       if rising_edge(clk) then
          case func is
 				when FUNCTION_ADD =>
-					r_wide <= (x(31) & x) + (y(31) & y);
-					r <= r_wide(31 downto 0);
-					flags.overflow <= r_wide(32);
+					r <= x + y;
+					flags.overflow <= '0';
+					if x(31) = y(31) then
+						if x(31) /= y(31) then
+							flags.overflow <= '1';
+						end if;
+					end if;
+					
 				
 				when FUNCTION_ADDU =>
 					r_wide <= ('0' & x) + ('0' & y);
 					r <= x + y;
 					flags.overflow <= r_wide(32);
 					
+					
 				when FUNCTION_AND =>
 					r <= x and y;
-					
-				when FUNCTION_BREAK =>
 					
 
 				when FUNCTION_DIV =>
 					r <= x / y;
+					
 
 				when FUNCTION_DIVU =>
 					r <= signed(unsigned(x) / unsigned(y));
-
-				when FUNCTION_JALR =>
-
-				when FUNCTION_JR =>
+				
 
 				when FUNCTION_MULT =>
-					r <= (x * y)(31 downto 0);
+					r <= x * y;
+					
 
 				when FUNCTION_MULTU =>
-					r <= (unsigned(x) * unsigned(y))(31 downto 0);
+					r <= signed(unsigned(x) * unsigned(y));
+					
 
 				when FUNCTION_NOR =>
 					r <= x nor y;
+					
 
 				when FUNCTION_OR =>
 					r <= x or y;
+					
 
 				when FUNCTION_SLL =>
-					r <= signed(shift_left(unsigned(x), to_integer(y)));
+					r <= signed(shift_left(unsigned(x), to_integer(y(10 downto 6))));
+					
 
 				when FUNCTION_SLLV =>
-					r <= unsigned(shift_left(unsigned(x), to_integer(y)));
+					r <= signed(shift_left(unsigned(x), to_integer(y)));
+					
 
 				when FUNCTION_SLT =>
-					if b > 0 then
-						r <= '1';
+					if x > y then
+						r <= "1";
 					end if;
+					
+					
 				when FUNCTION_SLTU =>
-					if unsigned(b) > 0 then
-						r <= '1';
+					if unsigned(x) > unsigned(y) then
+						r <= "1";
 					end if;
 				
+				
 				when FUNCTION_SRA =>
-					r <= shift_right(x, to_integer(y));
+					r <= shift_right(x, to_integer(y(10 downto 6)));
+					
 
 				when FUNCTION_SRAV =>
+                    r <= shift_right(x, to_integer(y));
+				
 					
 				when FUNCTION_SRL =>
-					r <= signed(shift_right(unsigned(x), to_integer(y)));
+					r <= signed(shift_right(unsigned(x), to_integer(y(10 downto 6))));
+					
 
 				when FUNCTION_SRLV =>
+                    r <= signed(shift_right(unsigned(x), to_integer(y)));
+				
 
 				when FUNCTION_SUB =>
 					r <= x - y;
+					
 
 				when FUNCTION_SUBU =>
 					r <= signed(unsigned(x) - unsigned(y));
+                    flags.carry <= '0';
+                    if y > x then
+                        flags.carry <= '1';
+                    end if;
+					
 
 				when FUNCTION_XOR =>
 					r <= x xor y;
 					
+					
 				when FUNCTION_PASSTHROUGH =>
 					r <= x;
+					
 				
 				when others =>
 					null;
