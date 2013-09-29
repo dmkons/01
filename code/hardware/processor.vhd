@@ -105,13 +105,12 @@ architecture behavioral of processor is
 	 
 	 -- the control unit
 	 component control_unit is
-	 
 	 port (
 			  clock : in std_logic;
 			  instruction : in std_logic_vector(5 downto 0);
 			  reset : in std_logic;
 				
-           register_destination : out std_logic;
+              register_destination : out std_logic;
 			  branch : out std_logic;
 			  memory_read : out std_logic;
 			  memory_to_register : out std_logic;
@@ -123,9 +122,22 @@ architecture behavioral of processor is
 	 );
 	 end component;
             
-    signal read_data_1, read_data_2, alu1_result, instruction : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+
+     
+     -- "Registers" read data signals
+     signal read_data_1, read_data_2 : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+     
+     -- Instruction Memory signals
+     signal instruction : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+     
+     -- ALU1 signals
+     signal alu1_result : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+     
+     
+             
 	 signal pc_in, pc_out : std_logic_vector(MEM_ADDR_BUS-1 downto 0);
 	 signal alu_in : alu_input;
+     
 	 -- Defining aliases for the different parts of the instruction signal
 	 alias instruction_concat is instruction(25 downto 0)
 	 alias instruction_register_addr_1 is instruction(25 downto 21)
@@ -149,22 +161,34 @@ begin
 	
 	PC: pc generic map ( N=>MEM_DATA_BUS)
 		port map (
-			CLK => clk
-			PC_IN => pc_out
+			CLK => clk,
+			PC_IN => pc_out,
 			PC_OUT => pc_out
 	);
 	
 	-- Instruction memory
-	MEMORY: memory generic map (M => MEM_ADDR_BUS; N => MEM_DATA_BUS)
+	INSTRUCTION_MEMORY: memory generic map (M => MEM_ADDR_BUS; N => MEM_DATA_BUS)
 		port map (
-			CLK => CLK
-			RESET => reset
+			CLK => CLK,
+			RESET => reset,
 			W_ADDR =>     --
 			WRITE_DATA => -- Hvordan og når skrives det til instruksjoneminne?
 			MemWrite =>   --
-			ADDR => pc_out
+			ADDR => pc_out,
 			READ_DATA => instruction
 	);
+    
+    -- Data Memory
+    DATA_MEMORY: memory generic map (M => MEM_ADDR_BUS; N=> MEM_DATA_BUS)
+        port map (
+ 			CLK => CLK,
+			RESET => reset,
+			W_ADDR =>     --
+			WRITE_DATA => -- registers read data
+			MemWrite =>   -- ???
+			ADDR => alu1_result, -- ALU1 result
+			READ_DATA => 
+    );
 		
 end behavioral;
 
