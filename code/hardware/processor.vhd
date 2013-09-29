@@ -149,7 +149,7 @@ architecture behavioral of processor is
 	 alias instruction_register_addr_2 is instruction(20 downto 16)
 	 alias instruction_register_addr_3 is instruction(15 downto 11)
 	 alias instruction_sign_extend is instruction(15 downto 0)
-	 alias instruction_alu_control is instruction(5 downto 0)
+	 alias instruction_func is instruction(5 downto 0)
      
      -- Control unit signals, see fig 4.2
      signal register_destination, branch, memory_read,
@@ -167,7 +167,8 @@ begin
         port map (
         reset => reset,
         clock => CLK,
-        instruction => instruction_opcode,
+        instruction_opcode => instruction_opcode,
+        instruction_func => instruction_func,
         
         register_destination => register_destination,
         branch => branch,
@@ -176,7 +177,8 @@ begin
         alu_operation => alu_operation,
         alu_source => alu_source,
         register_write => register_write,
-        jump => jump
+        jump => jump,
+        shift_swap => shift_swap
         
     );
 
