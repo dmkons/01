@@ -70,7 +70,7 @@ begin
 			case instruction_opcode is
 				when OPCODE_R_ALL =>
                     case instruction_func is 
-                        when FUNCTION_SSL -- shift logical cases
+                        when FUNCTION_SLL -- shift logical cases
                             | FUNCTION_SRL =>
                             shift_swap <= '1';
                         when others =>
