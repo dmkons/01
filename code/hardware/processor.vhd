@@ -108,7 +108,8 @@ architecture behavioral of processor is
 	 component control_unit is
 	 port (
 			  clock : in std_logic;
-			  instruction : in std_logic_vector(5 downto 0);
+			  instruction_opcode : in std_logic_vector(5 downto 0);
+              instruction_func : in std_logic_vector(5 downto 0);
 			  reset : in std_logic;
 				
               register_destination : out std_logic;
@@ -125,7 +126,7 @@ architecture behavioral of processor is
          
      -- all the multiplexors
      -- (all them multiplexors)
-     component multiplexor is
+     component MUX is
         generic (
             N: natural := MEM_DATA_BUS
         );
@@ -136,14 +137,14 @@ architecture behavioral of processor is
             MUX_IN_1 : in  STD_LOGIC_VECTOR (N-1 downto 0);
             MUX_OUT : out  STD_LOGIC_VECTOR (N-1 downto 0)
         );
-     end component --end multiplexorz 
+     end component MUX; --end multiplexorz 
         
         
      
      
      -- "Registers" read data signals
-     signal read_data_1 : std_logic_vector(MEM_DATA_BUS-1 downto 0);
-     signal read_data_2 : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+     signal read_data_1 : std_logic_vector (MEM_DATA_BUS-1 downto 0);
+     signal read_data_2 : std_logic_vector (MEM_DATA_BUS-1 downto 0);
      
      
      -- ALU1 signals
@@ -161,13 +162,13 @@ architecture behavioral of processor is
      signal instruction : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      
      -- Defining aliases for the different parts of the instruction signal
-     alias instruction_opcode is instruction(31 downto 26)
-	 alias instruction_concat is instruction(25 downto 0)
-	 alias instruction_register_addr_1 is instruction(25 downto 21)
-	 alias instruction_register_addr_2 is instruction(20 downto 16)
-	 alias instruction_register_addr_3 is instruction(15 downto 11)
-	 alias instruction_sign_extend is instruction(15 downto 0)
-	 alias instruction_func is instruction(5 downto 0)
+     alias instruction_opcode is instruction(31 downto 26);
+	 alias instruction_concat is instruction(25 downto 0);
+	 alias instruction_register_addr_1 is instruction(25 downto 21);
+	 alias instruction_register_addr_2 is instruction(20 downto 16);
+	 alias instruction_register_addr_3 is instruction(15 downto 11);
+	 alias instruction_sign_extend is instruction(15 downto 0);
+	 alias instruction_func is instruction(5 downto 0);
      
      -- Control unit signals, see fig 4.2
      signal register_destination, branch, memory_read,
@@ -178,8 +179,6 @@ architecture behavioral of processor is
      -- mux signals
      signal MUX_shift_swap_out : std_logic;
 
-  --  signal read_data_1, read_data_2, alu1_result : signed(MEM_DATA_BUS-1 downto 0);
-	 signal alu_in : alu_input;
 	
 begin
 
@@ -219,7 +218,7 @@ begin
 			PC_OUT => pc_out
         );
     
-    MUX_shift_swap: multiplexor
+    MUX_shift_swap: MUX
         port map (
             CLK => CLK,
             MUX_ENABLE => shift_swap,
@@ -229,7 +228,7 @@ begin
         );
 	
 	-- Instruction memory
-	INSTRUCTION_MEMORY: memory generic map (M => MEM_ADDR_BUS; N => MEM_DATA_BUS)
+	INSTRUCTION_MEMORY: memory generic map (M =: MEM_ADDR_BUS; N =: MEM_DATA_BUS)
 		port map (
 			CLK => CLK,
 			RESET => reset,
