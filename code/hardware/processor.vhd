@@ -65,23 +65,7 @@ architecture behavioral of processor is
             PC_OUT  : out  STD_LOGIC_VECTOR (N-1 downto 0)
         );
     end component;
-    
-    -- memory component for the instruction and data memory blocks
-	component memory is 
-		generic (
-			N: natural := MEM_DATA_BUS;
-			M: natural := MEM_ADDR_BUS
-		);
-		port (
-			CLK		    	:   in STD_LOGIC;
-			RESET			:	in  STD_LOGIC;	
-			W_ADDR		    :	in  STD_LOGIC_VECTOR (M-1 downto 0);	-- Address to write data
-			WRITE_DATA	    :	in  STD_LOGIC_VECTOR (N-1 downto 0);	-- Data to be written
-			MemWrite		:	in  STD_LOGIC;							-- Write Signal
-			ADDR			:	in  STD_LOGIC_VECTOR (M-1 downto 0);	-- Address to access data
-			READ_DATA	    :	out STD_LOGIC_VECTOR (N-1 downto 0)		-- Data read from memory
-		);
-	end component;
+   
     
     
     -- the Registers block
@@ -228,29 +212,6 @@ begin
             MUX_OUT => MUX_shift_swap_out
         );
 	
-	-- Instruction memory
-	INSTRUCTION_MEMORY: memory generic map (M => MEM_ADDR_BUS, N => MEM_DATA_BUS)
-		port map (
-			CLK => CLK,
-			RESET => reset,
-			W_ADDR =>     --
-			WRITE_DATA => -- Hvordan og når skrives det til instruksjoneminne?
-			MemWrite =>   --
-			ADDR => pc_out,
-			READ_DATA => instruction
-        );
-    
-    -- Data Memory
-    DATA_MEMORY: memory generic map (M => MEM_ADDR_BUS, N=> MEM_DATA_BUS)
-        port map (
- 			CLK => CLK,
-			RESET => reset,
-			W_ADDR =>     -- ???
-			WRITE_DATA => read_data_2, -- from Registers' read data 2
-			MemWrite =>   -- ???
-			ADDR => alu1_result, -- ALU1 result
-			READ_DATA => read_data -- outgoing data, should go to the MUX with the memtoReg flag going into it
-        );
 		
 end behavioral;
 
