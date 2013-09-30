@@ -120,9 +120,10 @@ architecture behavioral of processor is
 			  memory_write : out std_logic; 
 			  alu_source : out std_logic;
 			  register_write : out std_logic;
-			  jump : out std_logic
+			  jump : out std_logic;
+              shift_swap : out std_logic
 	 );
-	 end component;
+	 end component control_unit;
          
      -- all the multiplexors
      -- (all them multiplexors)
@@ -177,7 +178,7 @@ architecture behavioral of processor is
         jump, shift_swap : std_logic;
      
      -- mux signals
-     signal MUX_shift_swap_out : std_logic;
+     signal MUX_shift_swap_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
 
 	
 begin
@@ -211,7 +212,7 @@ begin
 			ALU_IN => alu_in
 		);
 	
-	PC: pc generic map ( N=>MEM_DATA_BUS)
+	PC: pc generic map (N=>MEM_DATA_BUS)
 		port map (
 			CLK => clk,
 			PC_IN => pc_out,
@@ -228,7 +229,7 @@ begin
         );
 	
 	-- Instruction memory
-	INSTRUCTION_MEMORY: memory generic map (M =: MEM_ADDR_BUS; N =: MEM_DATA_BUS)
+	INSTRUCTION_MEMORY: memory generic map (M => MEM_ADDR_BUS, N => MEM_DATA_BUS)
 		port map (
 			CLK => CLK,
 			RESET => reset,
@@ -240,7 +241,7 @@ begin
         );
     
     -- Data Memory
-    DATA_MEMORY: memory generic map (M => MEM_ADDR_BUS; N=> MEM_DATA_BUS)
+    DATA_MEMORY: memory generic map (M => MEM_ADDR_BUS, N=> MEM_DATA_BUS)
         port map (
  			CLK => CLK,
 			RESET => reset,
