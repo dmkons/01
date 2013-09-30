@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity MUX is
-    generic (N :NATURAL;);
+    generic (N :NATURAL);
     Port (  CLK : in  STD_LOGIC;
             MUX_ENABLE : in STD_LOGIC;
             MUX_IN_0 : in  STD_LOGIC_VECTOR (N-1 downto 0);
@@ -22,8 +22,9 @@ begin
                 MUX_OUT <= MUX_IN_0;
             ELSE
                 MUX_OUT <= MUX_IN_1;
+            end if;
 		end if;
-	end process PC_PROC;
+	end process; -- MUX_PROC
 
-end Behavioral;
+end; -- Behavioral
 
