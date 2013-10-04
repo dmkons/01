@@ -39,9 +39,9 @@ begin
 					
 				
 				when FUNCTION_ADDU =>
-					r_wide <= ('0' & x) + ('0' & y);
+					r_wide := ('0' & x) + ('0' & y);
 					r <= x + y;
-					flags.overflow <= r_wide(32);
+					flags.carry <= r_wide(32);
 					
 					
 				when FUNCTION_AND =>
@@ -57,7 +57,7 @@ begin
 				
 
 				when FUNCTION_MULT =>
-					r <= x * y;
+					r <= resize(x * y, 32);
 					
 
 				when FUNCTION_MULTU =>
@@ -73,7 +73,7 @@ begin
 					
 
 				when FUNCTION_SLL =>
-					r <= signed(shift_left(unsigned(x), to_integer(y(10 downto 6))));
+					r <= signed(shift_left(unsigned(x), to_integer(y)));
 					
 
 				when FUNCTION_SLLV =>
@@ -81,14 +81,18 @@ begin
 					
 
 				when FUNCTION_SLT =>
-					if x > y then
+					if x < y then
 						r <= "00000000000000000000000000000001";
+                    else
+                        r <= "00000000000000000000000000000000";
 					end if;
 					
 					
 				when FUNCTION_SLTU =>
-					if unsigned(x) > unsigned(y) then
+					if unsigned(x) < unsigned(y) then
 						r <= "00000000000000000000000000000001";
+                    else
+                        r <= "00000000000000000000000000000000";
 					end if;
 				
 				
