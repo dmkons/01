@@ -285,7 +285,7 @@ begin
         begin
             dmem_address <= std_logic_vector(alu1_result);
         end process;
-		
+
         process (clk, pc_out)
         begin
             if rising_edge(clk) then
