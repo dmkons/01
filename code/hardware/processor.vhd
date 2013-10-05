@@ -60,6 +60,8 @@ architecture behavioral of processor is
         port (
             CLK     : in STD_LOGIC;
             PC_IN   : in  STD_LOGIC_VECTOR (N-1 downto 0);
+            RESET : in std_logic;
+            pc_enable : in std_logic;
             PC_OUT  : out  STD_LOGIC_VECTOR (N-1 downto 0)
         );
     end component;
@@ -97,6 +99,7 @@ architecture behavioral of processor is
               alu_func : out std_logic_vector(5 downto 0);
 			  alu_source : out std_logic;
 			  register_write : out std_logic;
+              pc_enable : out std_logic;
 			  jump : out std_logic;
               shift_swap : out std_logic
 	 );
@@ -131,6 +134,7 @@ architecture behavioral of processor is
      
      -- PC signals
 	 signal pc_in, pc_out : std_logic_vector(MEM_ADDR_BUS-1 downto 0);
+     signal pc_enable : std_logic;
      
      -- Defining aliases for the different parts of the instruction signal
      alias instruction_opcode is imem_data_in(31 downto 26);
@@ -181,6 +185,7 @@ begin
         register_write => register_write,
         jump => jump,
         shift_swap => shift_swap,
+        pc_enable => pc_enable,
         memory_write => memory_write
         
     );
@@ -201,7 +206,9 @@ begin
 		port map (
 			CLK => clk,
 			PC_IN => mux_jump_out,
-			PC_OUT => pc_out
+			PC_OUT => pc_out,
+            pc_enable => pc_enable,
+            RESET => reset
         );
     
     MUX_SHIFT_SWAP: MUX generic map (N => 32)
@@ -276,13 +283,6 @@ begin
         process (alu1_result)
         begin
             dmem_address <= std_logic_vector(alu1_result);
-        end process;
-        
-        process (clk, reset)
-        begin
-            if rising_edge(clk) then
-                mux_jump_out <= "00000000000000000000000000000000";
-            end if;
         end process;
         
         process (clk, pc_out)

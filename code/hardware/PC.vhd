@@ -5,6 +5,8 @@ entity PC is
     generic (N :NATURAL);
     Port ( CLK	: in  STD_LOGIC;
 			  PC_IN : in  STD_LOGIC_VECTOR (N-1 downto 0);
+              reset : in std_logic;
+              pc_enable : in std_logic;
            PC_OUT : out  STD_LOGIC_VECTOR (N-1 downto 0));
 end PC;
 
@@ -15,7 +17,13 @@ begin
 	PC_PROC: process(CLK, PC_IN)
 	begin	
 		if rising_edge (CLK) then
-			PC_OUT <= PC_IN;
+            if reset = '1' then
+                pc_out <= (others => '0');
+            else
+                if pc_enable = '1' then
+                    PC_OUT <= PC_IN;
+                end if;
+            end if;
 		end if;
 	end process PC_PROC;
 

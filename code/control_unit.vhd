@@ -19,6 +19,7 @@ entity control_unit is
 			  memory_write : out std_logic; 
 			  alu_source : out std_logic;
 			  register_write : out std_logic;
+              pc_enable : out std_logic;
 			  jump : out std_logic; -- I've added this because it looks like we need it,
 										  -- even though it is not on figure 4.2
               shift_swap : out std_logic -- the control signal that sends read data 2 into ALU1 rather than read data 1                            
