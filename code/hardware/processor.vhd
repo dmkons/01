@@ -158,6 +158,7 @@ architecture behavioral of processor is
      signal mux_branch_out : std_logic_vector(MEM_DATA_BUS-1 downto 0); 
      signal mux_jump_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      signal mux_alu_source_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+	 signal mux_branch_enable : std_logic;
      
      signal jump_address : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      
@@ -245,7 +246,7 @@ begin
       MUX_BRANCH: MUX generic map (N => 32)
         port map (
             CLK => CLK,
-            MUX_ENABLE => branch and alu_flags.zero,
+            MUX_ENABLE => mux_branch_enable,
             MUX_IN_0 => mux_branch_in_0,
             MUX_IN_1 => mux_branch_in_1,
             MUX_OUT => mux_branch_out
@@ -280,7 +281,7 @@ begin
         
         process (clk, reset)
         begin
-            if rising_edge(clk) then
+            if rising_edge(clk) and reset='1' then
                 mux_jump_out <= "00000000000000000000000000000000";
             end if;
         end process;
@@ -327,6 +328,11 @@ begin
         begin
             dmem_address_wr <= std_logic_vector(alu1_result);
         end process;
+		
+		process(branch, alu_flag)
+		begin
+			mux_branch_enable <= branch and alu_flags.zero;
+		end process;
 		
 end behavioral;
 
