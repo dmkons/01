@@ -329,7 +329,7 @@ begin
             dmem_address_wr <= std_logic_vector(alu1_result);
         end process;
 		
-		process(branch, alu_flag)
+		process(branch, alu_flags)
 		begin
 			mux_branch_enable <= branch and alu_flags.zero;
 		end process;
