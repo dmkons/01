@@ -112,32 +112,6 @@ BEGIN
       y <= "11101011011000010011010010101101";
       wait for clk_period;
       test("AND", "regular", r, "11000001011000010000000000001001");
-      
-      
------ DIV
-      func <= FUNCTION_DIV;
-      
-      -- test regular div
-      x <= "01010101011011010100101101001001";
-      y <= "00001011011000010011010010101101";
-      wait for clk_period;
-      test("DIV", "regular", r, "00000000000000000000000000000111");
-      
-      -- test div with a negative operand
-      x <= "01010101011011010100101101001001";
-      y <= "11111011011000010011010010101101";
-      wait for clk_period;
-      test("DIV", "negative", r, "11111111111111111111111111101110");
-      
-      
------ DIVU
-      func <= FUNCTION_DIVU;
-
-      -- test regular divu
-      x <= "11010101011011010100101101001001";
-      y <= "00001011011000010011010010101101";
-      wait for clk_period;
-      test("DIVU", "regular", r, "00000000000000000000000000010010");
 
       
 ----- MULT

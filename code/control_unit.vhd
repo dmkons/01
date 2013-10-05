@@ -14,9 +14,8 @@ entity control_unit is
 				
               register_destination : out std_logic;
 			  branch : out std_logic;
-			  memory_read : out std_logic;
 			  memory_to_register : out std_logic;
-			  alu_operation : out std_logic;
+              alu_func : out std_logic_vector(5 downto 0);
 			  memory_write : out std_logic; 
 			  alu_source : out std_logic;
 			  register_write : out std_logic;
@@ -44,26 +43,29 @@ begin
 end process;
 
 
-process (current_state, instruction_opcode)
+process (current_state, instruction_opcode, instruction_func)
 begin
-
-	-- set to defaults
-	register_destination <= '0';
-	branch <= '0';
-	memory_read <= '0';
-	memory_to_register <= '0';
-	alu_operation <= '0';
-	memory_write <= '0';
-	alu_source <= '0';
-	register_write <= '0';
+    
+    
+    -- set to defaults
+    register_destination <= '0';
+    branch <= '0';
+    memory_to_register <= '0';
+    memory_write <= '0';
+    alu_source <= '0';
+    register_write <= '0';
     shift_swap <= '0';
+    jump <= '0';
+    alu_func <= FUNCTION_PASSTHROUGH;
 
 	case current_state is
 		when fetch =>
 			next_state <= execute;
 
      when execute =>
+              
 			next_state <= fetch;
+            alu_func <= instruction_func;
 			
 			case instruction_opcode is
 				when OPCODE_R_ALL =>
@@ -74,7 +76,6 @@ begin
                         when others =>
                         -- do nothing
                      end case; -- end instruction_func
-                    alu_operation <= '1';
                     register_destination <= '1';
                     register_write <= '1';
 				
@@ -86,39 +87,24 @@ begin
 					| OPCODE_LUI
 					| OPCODE_SLTI
 					| OPCODE_SLTIU =>
-						alu_operation <= '1';
 						alu_source <= '1';
 						register_write <= '1';					
 					
-				when OPCODE_BEQ
-					| OPCODE_BGEZ
-					| OPCODE_BGTZ
-					| OPCODE_BLEZ
-					| OPCODE_BNE =>
+				when OPCODE_BNE =>
 						branch <= '1';
 						
-				when OPCODE_LB
-					| OPCODE_LBU
-					| OPCODE_LH
-					| OPCODE_LHU
-					| OPCODE_LW =>
-					   -- TODO: add flip-flips or something since we need to stall?
-						memory_read <= '1';
+				when OPCODE_LW =>
 						memory_to_register <= '1';
 						alu_source <= '1';
 						register_write <= '1';
 						next_state <= stall;
 					
-				when OPCODE_SB
-					| OPCODE_SH
-					| OPCODE_SW =>
-						-- TODO: add flip-flips or something since we need to stall?
+				when OPCODE_SW =>
 						memory_write <= '1';
 						alu_source <= '1';
 						next_state <= stall;
 						
-				when OPCODE_J
-					| OPCODE_JAL =>
+				when OPCODE_J =>
 						jump <= '1';
 				
 				when others => 

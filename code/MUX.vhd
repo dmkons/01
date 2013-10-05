@@ -15,7 +15,7 @@ architecture Behavioral of MUX is
 begin
 
 
-    MUX_PROC: process(CLK, MUX_ENABLE, MUX_IN, MUX_OUT)
+    MUX_PROC: process(CLK, MUX_ENABLE, MUX_IN_0, MUX_IN_1)
     begin	
         if rising_edge (CLK) THEN
             if (MUX_ENABLE='0') THEN

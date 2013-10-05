@@ -46,14 +46,6 @@ begin
 					
 				when FUNCTION_AND =>
 					r <= x and y;
-					
-
-				when FUNCTION_DIV =>
-					r <= x / y;
-					
-
-				when FUNCTION_DIVU =>
-					r <= signed(unsigned(x) / unsigned(y));
 				
 
 				when FUNCTION_MULT =>
@@ -61,7 +53,7 @@ begin
 					
 
 				when FUNCTION_MULTU =>
-					r <= signed(unsigned(x) * unsigned(y));
+					r <= signed(resize(unsigned(x) * unsigned(y), 32));
 					
 
 				when FUNCTION_NOR =>
