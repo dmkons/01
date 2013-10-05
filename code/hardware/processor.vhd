@@ -282,7 +282,7 @@ begin
         process (clk, reset)
         begin
             if rising_edge(clk) and reset='1' then
-                mux_jump_out <= "00000000000000000000000000000000";
+                pc_in <= "00000000000000000000000000000000";
             end if;
         end process;
         
