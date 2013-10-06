@@ -93,8 +93,9 @@ begin
 						alu_source <= '1';
 						register_write <= '1';					
 					
-				when OPCODE_BNE =>
+				when OPCODE_BEQ =>
 						branch <= '1';
+						alu_func <= FUNCTION_SUB;
 						
 				when OPCODE_LW =>
 						memory_to_register <= '1';

@@ -106,6 +106,11 @@ begin
 
 				when FUNCTION_SUB =>
 					r <= x - y;
+					if (r="00000000000000000000000000000000") then
+						alu_flags.zero <= "1";
+					else
+						alu_flags.zero <= "0";
+					end if;
 					
 
 				when FUNCTION_SUBU =>
@@ -122,7 +127,6 @@ begin
 					
 				when FUNCTION_PASSTHROUGH =>
 					r <= x;
-					
 				
 				when others =>
 					null;
