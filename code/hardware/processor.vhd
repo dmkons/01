@@ -89,6 +89,7 @@ architecture behavioral of processor is
 			  instruction_opcode : in std_logic_vector(5 downto 0);
               instruction_func : in std_logic_vector(5 downto 0);
 			  reset : in std_logic;
+              processor_enable : in std_logic;
 				
               register_destination : out std_logic;
 			  memory_to_register : out std_logic;
@@ -184,6 +185,7 @@ begin
         clock => CLK,
         instruction_opcode => instruction_opcode,
         instruction_func => instruction_func,
+        processor_enable => processor_enable,
         
         register_destination => register_destination,
         memory_to_register => memory_to_register,

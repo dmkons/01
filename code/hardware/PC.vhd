@@ -14,7 +14,7 @@ architecture Behavioral of PC is
 
 begin
 
-	PC_PROC: process(CLK)
+	PC_PROC: process(CLK, pc_enable)
 	begin	
 		if rising_edge (CLK) then
             if reset = '1' then
