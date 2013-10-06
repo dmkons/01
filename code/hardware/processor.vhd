@@ -66,6 +66,14 @@ architecture behavioral of processor is
         );
     end component;
    
+	component BRANCH_CONTROLLER is
+        port (
+            CLK     : in STD_LOGIC;
+            BRANCH_ENABLE : in std_logic;
+            BRANCH_FLAG : in std_logic;
+            BRANCH_CONTROLLER_OUT : out std_logic
+        );
+    end component;
     
     
     -- the Registers block
@@ -192,7 +200,7 @@ begin
     );
 
 
-	MAIN_ALU: alu
+	MAIN_ALU:   alu
 		-- the ALU between Registers and Data memory on the suggested architecture
 		port map (
             CLK => clk,
@@ -259,7 +267,7 @@ begin
             MUX_OUT => mux_branch_out
         );
         
-        MUX_JUMP: MUX generic map (N => 32)
+	MUX_JUMP: MUX generic map (N => 32)
         port map (
             CLK => CLK,
             MUX_ENABLE => jump,
@@ -280,6 +288,14 @@ begin
 			RS => read_data_1,
 			RT => read_data_2
         );
+		
+	MAIN_BRANCH_CONTROLLER: BRANCH_CONTROLLER
+		port map (
+			CLK => clk,
+			BRANCH_ENABLE => branch,
+			BRANCH_FLAG => alu_flags.zero,
+			BRANCH_CONTROLLER_OUT => mux_branch_enable
+		);
         
         process (alu1_result)
         begin
@@ -328,11 +344,6 @@ begin
         begin
             dmem_address_wr <= std_logic_vector(alu1_result);
         end process;
-		
-		process(branch, alu_flags)
-		begin
-			mux_branch_enable <= branch and alu_flags.zero;
-		end process;
 		
 end behavioral;
 
