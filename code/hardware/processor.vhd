@@ -304,10 +304,8 @@ begin
 
         process (clk, pc_out)
         begin
-            if rising_edge(clk) then
-                imem_address <= pc_out;
-                mux_branch_in_0 <= std_logic_vector(unsigned(pc_out) + 1);
-            end if;
+            imem_address <= pc_out;
+            mux_branch_in_0 <= std_logic_vector(unsigned(pc_out) + 1);
         end process;
         
         process (mux_branch_in_0, sign_extend_out)
