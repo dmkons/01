@@ -8,6 +8,7 @@ package test_utils is
     function to_string(sv: unsigned) return string;
     procedure test(tag : string; name : string; expected : signed; var : signed);
     procedure test(tag : string; name : string; expected : std_logic; var : std_logic);
+    procedure test(tag : string; name : string; expected : std_logic_vector; var : std_logic_vector);
    
 end;
 
@@ -41,5 +42,10 @@ package body test_utils is
  procedure test(tag :string; name :string; var :std_logic; expected :std_logic) is
  begin
     assert var = expected report "[" & tag & "]" & " " & name & " | expected: " & std_logic'image(expected) & ", but was " & std_logic'image(var);
+ end;
+ 
+  procedure test(tag :string; name :string; var :std_logic_vector; expected :std_logic_vector) is
+ begin
+	 test(tag, name, signed(var), signed(expected));
  end;
 end;
