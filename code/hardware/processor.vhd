@@ -115,9 +115,15 @@ architecture behavioral of processor is
             MUX_OUT : out  STD_LOGIC_VECTOR (N-1 downto 0)
         );
      end component MUX; --end multiplexorz 
-        
-        
      
+	 component BRANCH_CONTROLLER is
+	 port (
+		flags : in alu_flags;
+		instruction_opcode : in std_logic_vector(5 downto 0);
+		branch : out std_logic;
+		compare_zero : out std_logic;
+		compare_zero_value : out std_logic_vector(31 downto 0);
+     );
      
      -- "Registers" read data signals
      signal read_data_1 : std_logic_vector (MEM_DATA_BUS-1 downto 0);
@@ -127,7 +133,8 @@ architecture behavioral of processor is
      -- ALU1 signals
      signal alu1_result : signed(MEM_DATA_BUS-1 downto 0);
      signal alu_func : std_logic_vector(5 downto 0);
-     
+     signal alu_flags : alu_flags;
+	 
      -- PC signals
 	 signal pc_in, pc_out : std_logic_vector(MEM_ADDR_BUS-1 downto 0);
      signal pc_enable : std_logic;
@@ -141,13 +148,15 @@ architecture behavioral of processor is
 	 alias instruction_sign_extend is imem_data_in(15 downto 0);
 	 alias instruction_func is imem_data_in(5 downto 0);
      
-     -- Control unit signals, see fig 4.2
-     signal register_destination, branch, memory_read,
+     -- Control unit signals, see fig 4.2 in the compendium
+     signal register_destination, memory_read,
         memory_write, memory_to_register, 
         alu_operation, alu_source, register_write,
         jump, shift_swap : std_logic;
-        
-     signal alu_flags : alu_flags;
+		
+     -- Branch controller signals
+	 signal branch, compare_zero : std_logic;
+	 signal compare_zero_value : std_logic_vector (MEM_DATA_BUS-1 downto 0);
      
      -- mux signals
      signal MUX_shift_swap_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);  
@@ -158,8 +167,9 @@ architecture behavioral of processor is
      signal mux_branch_out : std_logic_vector(MEM_DATA_BUS-1 downto 0); 
      signal mux_jump_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      signal mux_alu_source_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+	 signal mux_alu_source_zero_override_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
 	 signal mux_branch_enable : std_logic;
-     
+	 
      signal jump_address : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      
      signal sign_extend_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
@@ -175,7 +185,6 @@ begin
         instruction_func => instruction_func,
         
         register_destination => register_destination,
-        branch => branch,
         memory_to_register => memory_to_register,
         alu_source => alu_source,
         alu_func => alu_func,
@@ -187,6 +196,14 @@ begin
         
     );
 
+	MAIN_BRANCH_CONTROLLER: BRANCH_CONTROLLER
+		port map (
+			flags => alu_flags;
+			instruction_opcode => instruction_opcode;
+			branch => branch;
+			compare_zero => compare_zero;
+			compare_zero_value => compare_zero_value;
+	);
 
 	MAIN_ALU:   alu
 		-- the ALU between Registers and Data memory on the suggested architecture
@@ -243,7 +260,10 @@ begin
 		
 	MUX_ALU_SOURCE_ZERO_OVERRIDE: MUX generic map (N => 32)
 		port map (
-			
+			MUX_ENABLE => compare_zero,
+            MUX_IN_0 => MUX_alu_source_out,
+            MUX_IN_1 => compare_zero_value,
+            MUX_OUT => MUX_alu_source_zero_override_out
 		);
         
       
