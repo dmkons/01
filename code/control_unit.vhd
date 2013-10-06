@@ -7,6 +7,7 @@ entity control_unit is
 			  clock : in std_logic;
 			  instruction_opcode : in std_logic_vector(5 downto 0);
               instruction_func : in std_logic_vector(5 downto 0);
+              processor_enable : in std_logic;
               
 			  reset : in std_logic;
               
@@ -33,13 +34,15 @@ architecture behavioral of control_unit is
 begin
 
 
-process (clock, reset)
+process (clock, reset, processor_enable)
 begin
-	if (reset='1') then
-		current_state <= fetch;
-	elsif (rising_edge(clock)) then
-		current_state <= next_state;
-	end if;
+    if processor_enable = '1' then
+        if (reset='1') then
+            current_state <= fetch;
+        elsif (rising_edge(clock)) then
+            current_state <= next_state;
+        end if;
+    end if;
 end process;
 
 
