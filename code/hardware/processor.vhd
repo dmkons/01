@@ -117,14 +117,15 @@ architecture behavioral of processor is
      end component MUX; --end multiplexorz 
      
 	 component BRANCH_CONTROLLER is
-	 port (
-		flags : in alu_flags;
-		instruction_opcode : in std_logic_vector(5 downto 0);
-		branch : out std_logic;
-		compare_zero : out std_logic;
-		compare_zero_value : out std_logic_vector(31 downto 0);
-     );
-     
+		port (
+			flags : in alu_flags;
+			instruction_opcode : in std_logic_vector(5 downto 0);
+			branch : out std_logic;
+			compare_zero : out std_logic;
+			compare_zero_value : out std_logic_vector(31 downto 0)
+		);
+	 end component BRANCH_CONTROLLER;
+	 
      -- "Registers" read data signals
      signal read_data_1 : std_logic_vector (MEM_DATA_BUS-1 downto 0);
      signal read_data_2 : std_logic_vector (MEM_DATA_BUS-1 downto 0);
@@ -198,11 +199,11 @@ begin
 
 	MAIN_BRANCH_CONTROLLER: BRANCH_CONTROLLER
 		port map (
-			flags => alu_flags;
-			instruction_opcode => instruction_opcode;
-			branch => branch;
-			compare_zero => compare_zero;
-			compare_zero_value => compare_zero_value;
+			flags => alu_flags,
+			instruction_opcode => instruction_opcode,
+			branch => branch,
+			compare_zero => compare_zero,
+			compare_zero_value => compare_zero_value
 	);
 
 	MAIN_ALU:   alu
@@ -269,7 +270,6 @@ begin
       
       MUX_BRANCH: MUX generic map (N => 32)
         port map (
-            CLK => CLK,
             MUX_ENABLE => mux_branch_enable,
             MUX_IN_0 => mux_branch_in_0,
             MUX_IN_1 => mux_branch_in_1,
@@ -278,7 +278,6 @@ begin
         
 	MUX_JUMP: MUX generic map (N => 32)
         port map (
-            CLK => CLK,
             MUX_ENABLE => jump,
             MUX_IN_0 => mux_branch_out,
             MUX_IN_1 => jump_address,

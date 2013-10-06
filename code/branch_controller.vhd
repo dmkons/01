@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use work.opcodes.all;
 use work.mips_constant_pkg.all;
 
 entity branch_controller is
@@ -20,24 +21,23 @@ process(flags, instruction_opcode)
 	
 		branch <= '0';
 		compare_zero <= '0';
-		write_return <= '0';
 		compare_zero_value <= "00000000000000000000000000000000";
 	
-		case instruction_opcode_in is
-			when OPCODE_BEQ
+		case instruction_opcode is
+			when OPCODE_BEQ =>
 				branch <= flags.zero;
-			when OPCODE_BGEZ
+			when OPCODE_BGEZ =>
 				branch <= not flags.negative;
 				compare_zero <= '1';
-			when OPCODE_BGTZ
+			when OPCODE_BGTZ =>
 				branch <= not flags.negative;
 				compare_zero <= '1';
 				compare_zero_value <= "00000000000000000000000000000001";
-			when OPCODE_BLEZ
+			when OPCODE_BLEZ =>
 				branch <= flags.negative;
 				compare_zero <= '1';
 				compare_zero_value <= "11111111111111111111111111111111";
-			when OPCODE_BNE
+			when OPCODE_BNE =>
 				branch <= not flags.zero;
 			when others =>
 				null;
