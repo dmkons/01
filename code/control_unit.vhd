@@ -57,6 +57,7 @@ begin
     register_write <= '0';
     shift_swap <= '0';
     jump <= '0';
+    pc_enable <= '0';
     alu_func <= FUNCTION_PASSTHROUGH;
 
 	case current_state is
@@ -66,6 +67,7 @@ begin
      when execute =>
               
 			next_state <= fetch;
+            pc_enable <= '1';
             alu_func <= instruction_func;
 			
 			case instruction_opcode is
