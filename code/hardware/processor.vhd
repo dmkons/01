@@ -110,7 +110,6 @@ architecture behavioral of processor is
             N: natural := MEM_DATA_BUS
         );
         port (
-            CLK : in  STD_LOGIC;
             MUX_ENABLE : in STD_LOGIC;
             MUX_IN_0 : in  STD_LOGIC_VECTOR (N-1 downto 0);
             MUX_IN_1 : in  STD_LOGIC_VECTOR (N-1 downto 0);
@@ -212,7 +211,6 @@ begin
     
     MUX_SHIFT_SWAP: MUX generic map (N => 32)
         port map (
-            CLK => CLK,
             MUX_ENABLE => shift_swap,
             MUX_IN_0 => read_data_1,
             MUX_IN_1 => read_data_2,
@@ -221,16 +219,14 @@ begin
         
     MUX_REGISTER_DESTINATION: MUX generic map (N => 5)
         port map (
-            CLK => CLK,
             MUX_ENABLE => register_destination,
             MUX_IN_0 => instruction_register_addr_2,
             MUX_IN_1 => instruction_register_addr_3,
             MUX_OUT => mux_register_destination_out
         );
         
-     MUX_MEMORY_TO_REGISTER: MUX generic map (N => 32)
+    MUX_MEMORY_TO_REGISTER: MUX generic map (N => 32)
         port map (
-            CLK => CLK,
             MUX_ENABLE => memory_to_register,
             MUX_IN_0 => std_logic_vector(alu1_result),
             MUX_IN_1 => dmem_data_in,
@@ -238,14 +234,18 @@ begin
         );
         
         
-        MUX_ALU_SOURCE: MUX generic map (N => 32)
+	MUX_ALU_SOURCE: MUX generic map (N => 32)
         port map (
-            CLK => CLK,
             MUX_ENABLE => alu_source,
             MUX_IN_0 => read_data_2,
             MUX_IN_1 => sign_extend_out,
             MUX_OUT => MUX_alu_source_out
         );
+		
+	MUX_ALU_SOURCE_ZERO_OVERRIDE: MUX generic map (N => 32)
+		port map (
+			
+		);
         
       
       MUX_BRANCH: MUX generic map (N => 32)
