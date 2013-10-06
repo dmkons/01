@@ -1,6 +1,7 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+use work.mips_constant_pkg.all;
  
 ENTITY tb_processor IS
 END tb_processor;
@@ -12,12 +13,12 @@ ARCHITECTURE behavior OF tb_processor IS
          clk : IN  std_logic;
          reset : IN  std_logic;
          processor_enable : IN  std_logic;
-         imem_data_in : IN  std_logic_vector(31 downto 0);
-         dmem_data_in : IN  std_logic_vector(31 downto 0);
-         imem_address : OUT  std_logic_vector(31 downto 0);
-         dmem_address : OUT  std_logic_vector(31 downto 0);
-         dmem_address_wr : OUT  std_logic_vector(31 downto 0);
-         dmem_data_out : OUT  std_logic_vector(31 downto 0);
+         imem_data_in : IN  std_logic_vector(IDATA_BUS-1 downto 0);
+         dmem_data_in : IN  std_logic_vector(DDATA_BUS-1 downto 0);
+         imem_address : OUT  std_logic_vector(IADDR_BUS-1 downto 0);
+         dmem_address : OUT  std_logic_vector(DADDR_BUS-1 downto 0);
+         dmem_address_wr : OUT  std_logic_vector(DADDR_BUS-1 downto 0);
+         dmem_data_out : OUT  std_logic_vector(DDATA_BUS-1 downto 0);
          dmem_write_enable : OUT  std_logic
         );
     END COMPONENT;
@@ -27,18 +28,18 @@ ARCHITECTURE behavior OF tb_processor IS
    signal clk : std_logic := '0';
    signal reset : std_logic := '0';
    signal processor_enable : std_logic := '0';
-   signal imem_data_in : std_logic_vector(31 downto 0) := (others => '0');
-   signal dmem_data_in : std_logic_vector(31 downto 0) := (others => '0');
+   signal imem_data_in : std_logic_vector(IDATA_BUS-1 downto 0) := (others => '0');
+   signal dmem_data_in : std_logic_vector(DDATA_BUS-1 downto 0) := (others => '0');
 
  	--Outputs
-   signal imem_address : std_logic_vector(31 downto 0);
-   signal dmem_address : std_logic_vector(31 downto 0);
-   signal dmem_address_wr : std_logic_vector(31 downto 0);
-   signal dmem_data_out : std_logic_vector(31 downto 0);
+   signal imem_address : std_logic_vector(IADDR_BUS-1 downto 0);
+   signal dmem_address : std_logic_vector(DADDR_BUS-1 downto 0);
+   signal dmem_address_wr : std_logic_vector(DADDR_BUS-1 downto 0);
+   signal dmem_data_out : std_logic_vector(DDATA_BUS-1 downto 0);
    signal dmem_write_enable : std_logic;
 
    -- Clock period definitions
-   constant clk_period : time := 20 ns;
+   constant clk_period : time := 10 ns;
  
 BEGIN
  

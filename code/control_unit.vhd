@@ -1,12 +1,14 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use work.mips_constant_pkg.all;
 use work.opcodes.all;
 
 entity control_unit is
+    generic ( OPCODE_SIZE: natural; FUNCTION_SIZE: natural);
     Port ( 
 			  clock : in std_logic;
-			  instruction_opcode : in std_logic_vector(5 downto 0);
-              instruction_func : in std_logic_vector(5 downto 0);
+			  instruction_opcode : in std_logic_vector(OPCODE_SIZE-1 downto 0);
+              instruction_func : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
               processor_enable : in std_logic;
               
 			  reset : in std_logic;
@@ -15,7 +17,7 @@ entity control_unit is
 				
               register_destination : out std_logic;
 			  memory_to_register : out std_logic;
-              alu_func : out std_logic_vector(5 downto 0);
+              alu_func : out std_logic_vector(FUnCTION_SIZE-1 downto 0);
 			  memory_write : out std_logic; 
 			  alu_source : out std_logic;
 			  register_write : out std_logic;

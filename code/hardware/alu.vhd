@@ -5,12 +5,13 @@ use work.mips_constant_pkg.all;
 use work.opcodes.all;
 
 entity alu is
+    generic (WORD_SIZE: natural; FUNCTION_SIZE: natural);
 port ( 
     signal clk : in  std_logic;
-    signal x : in  signed(31 downto 0);
-    signal y : in  signed(31 downto 0);
-    signal r : out  signed(31 downto 0);
-    signal func : in std_logic_vector(5  downto 0);
+    signal x : in  signed(WORD_SIZE-1 downto 0);
+    signal y : in  signed(WORD_SIZE-1 downto 0);
+    signal r : out  signed(WORD_SIZE-1 downto 0);
+    signal func : in std_logic_vector(FUNCTION_SIZE-1  downto 0);
 	 signal flags : out alu_flags
 );
 end entity;
