@@ -284,13 +284,24 @@ BEGIN
       y <= "00000000000000000000000000000101";
       wait for clk_period;
       test("SUB", "regular", r, "01010101011011010100101101000100");
+		test("SUB", "regular negative flag", flags.negative, '0');
+		test("SUB", "regular zero flag", flags.zero, '0');
       
       -- test negative sub
       x <= "11010101011011010100101101001001";
       y <= "11111111111111111111111111111111";
       wait for clk_period;
       test("SUB", "negative", r, "11010101011011010100101101001010");
-      -- TODO: test flags
+      test("SUB", "negative negative flag", flags.negative, '1');
+		test("SUB", "negative zero flag", flags.zero, '0');
+		
+		-- test zero sub
+      x <= "11010101011011010100101101001001";
+      y <= "11010101011011010100101101001001";
+      wait for clk_period;
+      test("SUB", "zero", r, "00000000000000000000000000000000");
+      test("SUB", "zero negative flag", flags.negative, '0');
+		test("SUB", "zero zero flag", flags.zero, '1');
 
 
 ----- SUBU
