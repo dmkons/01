@@ -141,7 +141,7 @@ architecture behavioral of processor is
      signal pc_enable : std_logic;
      
      -- Defining aliases for the different parts of the instruction signal
-     alias instruction_opcode is imem_data_in(31 downto 26);
+    alias instruction_opcode is imem_data_in(31 downto 26);
 	 alias instruction_concat is imem_data_in(25 downto 0);
 	 alias instruction_register_addr_1 is imem_data_in(25 downto 21);
 	 alias instruction_register_addr_2 is imem_data_in(20 downto 16);
