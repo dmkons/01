@@ -112,6 +112,11 @@ begin
 					else
 						flags.zero <= '0';
 					end if;
+					if (r_readable<"00000000000000000000000000000000") then
+						flags.negative <= '1';
+					else
+						flags.negative <= '0';
+					end if;
 					
 
 				when FUNCTION_SUBU =>

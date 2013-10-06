@@ -211,7 +211,7 @@ begin
 		port map (
             CLK => clk,
 			X => signed(MUX_shift_swap_out),
-			Y => signed(mux_alu_source_out),
+			Y => signed(MUX_alu_source_zero_override_out),
 			R => alu1_result,
             FLAGS => alu_flags,
 			FUNC => alu_func
@@ -270,7 +270,7 @@ begin
       
       MUX_BRANCH: MUX generic map (N => 32)
         port map (
-            MUX_ENABLE => mux_branch_enable,
+            MUX_ENABLE => branch,
             MUX_IN_0 => mux_branch_in_0,
             MUX_IN_1 => mux_branch_in_1,
             MUX_OUT => mux_branch_out
