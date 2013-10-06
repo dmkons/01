@@ -2,6 +2,7 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 use work.opcodes.all;
+use work.mips_constant_pkg.all;
  
 ENTITY t_control_unit IS
 END t_control_unit;
@@ -9,15 +10,19 @@ END t_control_unit;
 ARCHITECTURE behavior OF t_control_unit IS 
  
     COMPONENT control_unit
+    generic (
+        OPCODE_SIZE : integer := OPCODE_SIZE;
+        FUNCTION_SIZE : integer := FUNCTION_SIZE
+    );
     PORT(
          clock : IN  std_logic;
-         instruction_opcode : IN  std_logic_vector(5 downto 0);
-         instruction_func : IN  std_logic_vector(5 downto 0);
+         instruction_opcode : IN  std_logic_vector(OPCODE_SIZE-1 downto 0);
+         instruction_func : IN  std_logic_vector(FUNCTION_SIZE-1 downto 0);
          reset : IN  std_logic;
          register_destination : OUT  std_logic;
          branch : OUT  std_logic;
          memory_to_register : OUT  std_logic;
-         alu_func : OUT  std_logic_vector(5 downto 0);
+         alu_func : OUT  std_logic_vector(FUNCTION_SIZE-1 downto 0);
          memory_write : OUT  std_logic;
          alu_source : OUT  std_logic;
          register_write : OUT  std_logic;
@@ -29,15 +34,15 @@ ARCHITECTURE behavior OF t_control_unit IS
 
    --Inputs
    signal clock : std_logic := '0';
-   signal instruction_opcode : std_logic_vector(5 downto 0) := (others => '0');
-   signal instruction_func : std_logic_vector(5 downto 0) := (others => '0');
+   signal instruction_opcode : std_logic_vector(OPCODE_SIZE-1 downto 0) := (others => '0');
+   signal instruction_func : std_logic_vector(FUNCTION_SIZE-1 downto 0) := (others => '0');
    signal reset : std_logic := '0';
 
  	--Outputs
    signal register_destination : std_logic;
    signal branch : std_logic;
    signal memory_to_register : std_logic;
-   signal alu_func : std_logic_vector(5 downto 0);
+   signal alu_func : std_logic_vector(FUNCTION_SIZE-1 downto 0);
    signal memory_write : std_logic;
    signal alu_source : std_logic;
    signal register_write : std_logic;
@@ -45,7 +50,7 @@ ARCHITECTURE behavior OF t_control_unit IS
    signal shift_swap : std_logic;
 
    -- Clock period definitions
-   constant clock_period : time := 20 ns;
+   constant clock_period : time := 10 ns;
  
 BEGIN
    uut: control_unit PORT MAP (

@@ -3,9 +3,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 use work.opcodes.all;
 
 entity alu_control is
-    Port ( func : in std_logic_vector(5 downto 0);
+    generic( FUNCTION_SIZE: natural);
+    Port ( func : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
 			  alu_operation : in std_logic;
-           output : out  std_logic_vector(5 downto 0)
+              output : out  std_logic_vector(FUNCTION_SIZE-1 downto 0)
 	 );
 end alu_control;
 

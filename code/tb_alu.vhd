@@ -12,24 +12,28 @@ END tb_alu;
 ARCHITECTURE behavior OF tb_alu IS 
  
     COMPONENT alu
+        generic(
+            WORD_SIZE : integer := WORD_SIZE;
+            FUNCTION_SIZE : integer := FUNCTION_SIZE
+        );
     PORT(
          clk : IN  std_logic;
-         x : IN  signed(31 downto 0);
-         y : IN  signed(31 downto 0);
-         r : OUT  signed(31 downto 0);
-         func : IN  std_logic_vector(5 downto 0);
+         x : IN  signed(WORD_SIZE-1 downto 0);
+         y : IN  signed(WORD_SIZE-1 downto 0);
+         r : OUT  signed(WORD_SIZE-1 downto 0);
+         func : IN  std_logic_vector(FUNCTION_SIZE-1 downto 0);
          flags : OUT  alu_flags
         );
     END COMPONENT;
 
    --Inputs
    signal clk : std_logic := '0';
-   signal x : signed(31 downto 0) := (others => '0');
-   signal y : signed(31 downto 0) := (others => '0');
-   signal func : std_logic_vector(5 downto 0) := (others => '0');
+   signal x : signed(WORD_SIZE-1 downto 0) := (others => '0');
+   signal y : signed(WORD_SIZE-1 downto 0) := (others => '0');
+   signal func : std_logic_vector(FUNCTION_SIZE-1 downto 0) := (others => '0');
 
  	--Outputs
-   signal r : signed(31 downto 0);
+   signal r : signed(WORD_SIZE-1 downto 0);
    signal flags : alu_flags;
 
    -- Clock period definitions

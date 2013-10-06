@@ -4,9 +4,10 @@ use work.opcodes.all;
 use work.mips_constant_pkg.all;
 
 entity branch_controller is
+    generic (WORD_SIZE : natural; OPCODE_SIZE: natural);
     Port ( flags : in  alu_flags;
-           instruction_opcode : in  STD_LOGIC_VECTOR (5 downto 0);
-		   compare_zero_value : out STD_LOGIC_VECTOR (31 downto 0);
+           instruction_opcode : in  STD_LOGIC_VECTOR (OPCODE_SIZE-1 downto 0);
+		   compare_zero_value : out STD_LOGIC_VECTOR (WORD_SIZE-1 downto 0);
 		   compare_zero : out STD_LOGIC;
            branch : out  STD_LOGIC
 		   );

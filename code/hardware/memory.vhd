@@ -7,10 +7,10 @@ entity memory is
 	port(
 		CLK			: in STD_LOGIC;
 		RESET			:	in  STD_LOGIC;	
-		W_ADDR		:	in  STD_LOGIC_VECTOR (N-1 downto 0);	-- Address to write data
+		W_ADDR		:	in  STD_LOGIC_VECTOR (M-1 downto 0);	-- Address to write data
 		WRITE_DATA	:	in  STD_LOGIC_VECTOR (N-1 downto 0);	-- Data to be written
 		MemWrite		:	in  STD_LOGIC;									-- Write Signal
-		ADDR			:	in  STD_LOGIC_VECTOR (N-1 downto 0);	-- Address to access data
+		ADDR			:	in  STD_LOGIC_VECTOR (M-1 downto 0);	-- Address to access data
 		READ_DATA	:	out STD_LOGIC_VECTOR (N-1 downto 0)		-- Data read from memory
 	);
 end memory;
@@ -21,7 +21,7 @@ architecture Behavioral of memory is
 	type MEM_T is array (MEM_SIZE-1 downto 0) of STD_LOGIC_VECTOR (N-1 downto 0);
 	
 	signal MEM : MEM_T := (others => (others => '0'));
-	signal address_reg :	STD_LOGIC_VECTOR (N-1 downto 0);	-- Address to access data
+	signal address_reg :	STD_LOGIC_VECTOR (M-1 downto 0);	-- Address to access data
 	
 begin
 

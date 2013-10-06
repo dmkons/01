@@ -1,11 +1,12 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use work.mips_constant_pkg.all;
 
 entity com is
     
   generic (
-    MEM_ADDR_BUS    : integer := 32;
+    MEM_ADDR_BUS    : integer := MEM_ADDR_COUNT;
     MEM_DATA_BUS    : integer := 32;
     INPUT_BUS_WIDTH : integer := 32);
 

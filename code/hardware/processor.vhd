@@ -5,7 +5,7 @@ use WORK.MIPS_CONSTANT_PKG.ALL;
 
 entity processor is
 	generic (
-		MEM_ADDR_BUS		: integer := 32;
+		MEM_ADDR_BUS		: integer := MEM_ADDR_COUNT;
 		MEM_DATA_BUS		: integer := 32
 		);
 		
@@ -25,37 +25,24 @@ end processor;
 
 architecture behavioral of processor is
 
-	
-	-- I guess the ALU is used for stuff?
-	-- Math, yo. Probably.
 	component alu is
+        generic (
+            WORD_SIZE : integer := WORD_SIZE;
+            FUNCTION_SIZE : integer := FUNCTION_SIZE
+        );
 		port (
         clk         : in std_logic;
-		X			: in signed(31 downto 0);
-		Y			: in signed(31 downto 0);
-		FUNC	    : in std_logic_vector(5 downto 0);
-		R			: out signed(31 downto 0);
+		X			: in signed(WORD_SIZE-1 downto 0);
+		Y			: in signed(WORD_SIZE-1 downto 0);
+		FUNC	    : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
+		R			: out signed(WORD_SIZE-1 downto 0);
 		FLAGS		: out alu_flags
-		);
-	end component;
-		
-	-- we need adders to increment the PC
-	component adder is
-		generic (
-			N: integer := MEM_ADDR_BUS
-		);
-		port (
-			X   	: in	STD_LOGIC_VECTOR(N-1 downto 0);
-			Y   	: in	STD_LOGIC_VECTOR(N-1 downto 0);
-			CIN	    : in	STD_LOGIC;
-			COUT	: out	STD_LOGIC;
-			R   	: out	STD_LOGIC_VECTOR(N-1 downto 0)
 		);
 	end component;
 	
     component PC is
 		generic (
-			N: integer := MEM_DATA_BUS
+			N: integer := MEM_ADDR_COUNT
 		);
         port (
             CLK     : in STD_LOGIC;
@@ -69,9 +56,9 @@ architecture behavioral of processor is
     -- the Registers block
     component register_file is
         port (
-			CLK 			:	in	STD_LOGIC;				
-			RESET			:	in	STD_LOGIC;				
-			RW				:	in	STD_LOGIC;				
+			CLK 			:	in	STD_LOGIC;
+			RESET			:	in	STD_LOGIC;
+			RW				:	in	STD_LOGIC;
 			RS_ADDR 		:	in	STD_LOGIC_VECTOR (RADDR_BUS-1 downto 0); 
 			RT_ADDR 		:	in	STD_LOGIC_VECTOR (RADDR_BUS-1 downto 0); 
 			RD_ADDR 		:	in	STD_LOGIC_VECTOR (RADDR_BUS-1 downto 0);
@@ -84,17 +71,21 @@ architecture behavioral of processor is
 	 
 	 -- the control unit
 	 component control_unit is
+     generic (
+        OPCODE_SIZE : integer := OPCODE_SIZE;
+        FUNCTION_SIZE : integer := FUNCTION_SIZE
+     );
 	 port (
 			  clock : in std_logic;
-			  instruction_opcode : in std_logic_vector(5 downto 0);
-              instruction_func : in std_logic_vector(5 downto 0);
+			  instruction_opcode : in std_logic_vector(OPCODE_SIZE-1 downto 0);
+              instruction_func : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
 			  reset : in std_logic;
               processor_enable : in std_logic;
 				
               register_destination : out std_logic;
 			  memory_to_register : out std_logic;
 			  memory_write : out std_logic; 
-              alu_func : out std_logic_vector(5 downto 0);
+              alu_func : out std_logic_vector(FUNCTION_SIZE-1 downto 0);
 			  alu_source : out std_logic;
 			  register_write : out std_logic;
               pc_enable : out std_logic;
@@ -118,12 +109,16 @@ architecture behavioral of processor is
      end component MUX; --end multiplexorz 
      
 	 component BRANCH_CONTROLLER is
-		port (
+        generic (
+            OPCODE_SIZE : integer := OPCODE_SIZE;
+            WORD_SIZE : integer := WORD_SIZE
+        );
+        port (
 			flags : in alu_flags;
-			instruction_opcode : in std_logic_vector(5 downto 0);
+			instruction_opcode : in std_logic_vector(OPCODE_SIZE-1 downto 0);
 			branch : out std_logic;
 			compare_zero : out std_logic;
-			compare_zero_value : out std_logic_vector(31 downto 0)
+			compare_zero_value : out std_logic_vector(WORD_SIZE-1 downto 0)
 		);
 	 end component BRANCH_CONTROLLER;
 	 
@@ -138,7 +133,7 @@ architecture behavioral of processor is
      signal alu_flags : alu_flags;
 	 
      -- PC signals
-	 signal pc_in, pc_out : std_logic_vector(MEM_ADDR_BUS-1 downto 0);
+	 signal pc_in, pc_out : std_logic_vector(MEM_ADDR_COUNT-1 downto 0);
      signal pc_enable : std_logic;
      
      -- Defining aliases for the different parts of the instruction signal
@@ -219,10 +214,10 @@ begin
 			FUNC => alu_func
 		);
 	
-	MAIN_PC: pc generic map (N=>MEM_DATA_BUS)
+	MAIN_PC: pc generic map (N=>MEM_ADDR_COUNT)
 		port map (
 			CLK => clk,
-			PC_IN => mux_jump_out,
+			PC_IN => mux_jump_out(MEM_ADDR_COUNT-1 downto 0),
 			PC_OUT => pc_out,
             pc_enable => pc_enable,
             RESET => reset
@@ -301,13 +296,13 @@ begin
 		
         process (alu1_result)
         begin
-            dmem_address <= std_logic_vector(alu1_result);
+            dmem_address <= std_logic_vector(resize(unsigned(alu1_result), dmem_address'length));
         end process;
 
         process (clk, pc_out)
         begin
-            imem_address <= pc_out;
-            mux_branch_in_0 <= std_logic_vector(unsigned(pc_out) + 1);
+            imem_address <= std_logic_vector(resize(unsigned(pc_out), imem_address'length));
+            mux_branch_in_0 <= std_logic_vector(resize(unsigned(pc_out) + 1, mux_branch_in_0'length));
         end process;
         
         process (mux_branch_in_0, sign_extend_out)
@@ -342,7 +337,7 @@ begin
         
         process(alu1_result)
         begin
-            dmem_address_wr <= std_logic_vector(alu1_result);
+            dmem_address_wr <= std_logic_vector(resize(unsigned(alu1_result), dmem_address_wr'length));
         end process;
 		
 end behavioral;
