@@ -105,8 +105,9 @@ begin
 				
 
 				when FUNCTION_SUB =>
-					r <= x - y;
-					if (r="00000000000000000000000000000000") then
+					r_readable := x - y;
+					r <= r_readable;
+					if (r_readable="00000000000000000000000000000000") then
 						flags.zero <= '1';
 					else
 						flags.zero <= '0';
