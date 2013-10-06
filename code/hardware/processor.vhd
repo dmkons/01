@@ -325,9 +325,9 @@ begin
             dmem_address_wr <= std_logic_vector(alu1_result);
         end process;
 		
-		process(branch)
+		process(branch, alu_flags.zero)
 		begin
-			mux_branch_enable <= branch and alu_flags.zero
+			mux_branch_enable <= branch and alu_flags.zero;
 		end process;
 		
 end behavioral;
