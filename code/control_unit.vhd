@@ -13,7 +13,6 @@ entity control_unit is
               
 				
               register_destination : out std_logic;
-			  branch : out std_logic;
 			  memory_to_register : out std_logic;
               alu_func : out std_logic_vector(5 downto 0);
 			  memory_write : out std_logic; 
@@ -50,7 +49,6 @@ begin
     
     -- set to defaults
     register_destination <= '0';
-    branch <= '0';
     memory_to_register <= '0';
     memory_write <= '0';
     alu_source <= '0';
@@ -93,8 +91,11 @@ begin
 						alu_source <= '1';
 						register_write <= '1';					
 					
-				when OPCODE_BEQ =>
-						branch <= '1';
+				when OPCODE_BEQ 
+					| OPCODE_BGEZ
+					| OPCODE_BGTZ 
+					| OPCODE_BLEZ 
+					| OPCODE_BNE =>
 						alu_func <= FUNCTION_SUB;
 						
 				when OPCODE_LW =>

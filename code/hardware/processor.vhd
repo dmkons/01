@@ -91,7 +91,6 @@ architecture behavioral of processor is
 			  reset : in std_logic;
 				
               register_destination : out std_logic;
-			  branch : out std_logic;
 			  memory_to_register : out std_logic;
 			  memory_write : out std_logic; 
               alu_func : out std_logic_vector(5 downto 0);
@@ -324,11 +323,6 @@ begin
         begin
             dmem_address_wr <= std_logic_vector(alu1_result);
         end process;
-		
-		process(branch, alu_flags.zero)
-		begin
-			mux_branch_enable <= branch and alu_flags.zero;
-		end process;
 		
 end behavioral;
 

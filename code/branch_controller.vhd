@@ -5,8 +5,10 @@ use work.mips_constant_pkg.all;
 entity branch_controller is
     Port ( flags : in  alu_flags;
            opcode_in : in  STD_LOGIC_VECTOR (5 downto 0);
-		   rt_in : in  STD_LOGIC_VECTOR (5 downto 0);
-           branch : out  STD_LOGIC);
+		   compare_value : out STD_LOGIC_VECTOR (31 downto 0);
+		   compare_zero : out STD_LOGIC;
+           branch : out  STD_LOGIC
+		   );
 end branch_controller;
 
 architecture Behavioral of branch_controller is
@@ -15,15 +17,31 @@ begin
 
 process(flags, opcode_in)
 	begin
+	
+		branch <= '0';
+		compare_zero <= '0';
+		write_return <= '0';
+		compare_value <= "00000000000000000000000000000000";
+	
 		case op_code_in is
 			when OPCODE_BEQ
 				branch <= flags.zero;
 			when OPCODE_BGEZ
+				branch <= not flags.negative;
+				compare_zero <= '1';
 			when OPCODE_BGTZ
+				branch <= not flags.negative;
+				compare_zero <= '1';
+				compare_value <= "00000000000000000000000000000001";
 			when OPCODE_BLEZ
+				branch <= flags.negative;
+				compare_zero <= '1';
+				compare_value <= "11111111111111111111111111111111";
 			when OPCODE_BNE
+				branch <= not flags.zero;
 			when others =>
-				branch <= '0';
+				null;
+				
 		end case;
    end process;
 end Behavioral;
