@@ -107,9 +107,9 @@ begin
 				when FUNCTION_SUB =>
 					r <= x - y;
 					if (r="00000000000000000000000000000000") then
-						flags.zero <= "1";
+						flags.zero <= '1';
 					else
-						flags.zero <= "0";
+						flags.zero <= '0';
 					end if;
 					
 
