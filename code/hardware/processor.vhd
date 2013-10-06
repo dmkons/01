@@ -65,16 +65,6 @@ architecture behavioral of processor is
             PC_OUT  : out  STD_LOGIC_VECTOR (N-1 downto 0)
         );
     end component;
-   
-	component BRANCH_CONTROLLER is
-        port (
-            CLK     : in STD_LOGIC;
-            BRANCH_ENABLE : in std_logic;
-            BRANCH_FLAG : in std_logic;
-            BRANCH_CONTROLLER_OUT : out std_logic
-        );
-    end component;
-    
     
     -- the Registers block
     component register_file is
@@ -289,14 +279,6 @@ begin
 			RT => read_data_2
         );
 		
-	MAIN_BRANCH_CONTROLLER: BRANCH_CONTROLLER
-		port map (
-			CLK => clk,
-			BRANCH_ENABLE => branch,
-			BRANCH_FLAG => alu_flags.zero,
-			BRANCH_CONTROLLER_OUT => mux_branch_enable
-		);
-        
         process (alu1_result)
         begin
             dmem_address <= std_logic_vector(alu1_result);
@@ -342,6 +324,11 @@ begin
         begin
             dmem_address_wr <= std_logic_vector(alu1_result);
         end process;
+		
+		process(branch)
+		begin
+			mux_branch_enable <= branch and alu_flags.zero
+		end process;
 		
 end behavioral;
 
