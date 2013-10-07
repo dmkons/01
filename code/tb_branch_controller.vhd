@@ -63,7 +63,8 @@ BEGIN
    -- Stimulus process
    stim_proc: process
    begin		
-
+		
+		-- Allow the component to settle
       wait for clk_period*10.5;
 
 		-- Test branch when equals
@@ -150,7 +151,9 @@ BEGIN
 		test("BNE", "equal (branach)", branch, '0');
 		test("BNE", "equal (compare_zero)", compare_zero, '0');
 		test("BNE", "equal (compare_zero_value)", compare_zero_value, "00000000000000000000000000000000");
-
+		
+		-- end of tests
+		
       wait;
    end process;
 
