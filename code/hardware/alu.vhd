@@ -133,7 +133,7 @@ begin
 					
 					
 				when FUNCTION_PASSTHROUGH =>
-					r <= x;
+					r <= y;
 				
 				when others =>
 					null;

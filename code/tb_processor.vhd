@@ -96,11 +96,11 @@ BEGIN
      
       -- store CAFEBABE to address 0
       imem_data_in <= OPCODE_SW & R0 & R3 & "0000000000000001";
-      wait for clk_period;
+      wait for clk_period*1.5;
       test("cafebabe", "dmem write enable", dmem_write_enable, '1');
       test("cafebabe", "address", dmem_address_wr, "00000001");
       test("cafebabe", "data", dmem_data_out, X"CAFEBABE");
-      wait for clk_period;
+      wait for clk_period*0.5;
       
 
       
