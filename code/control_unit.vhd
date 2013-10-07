@@ -41,10 +41,12 @@ begin
 process (clock, reset, processor_enable)
 begin
     if processor_enable = '1' then
-        if reset='1' then
-            current_state <= stall;
-        elsif rising_edge(clock) then
+        if rising_edge(clock) then
             current_state <= next_state;
+            
+            if reset = '1' then
+                current_state <= stall;
+            end if;
         end if;
     end if;
 end process;
@@ -52,20 +54,20 @@ end process;
 
 process (current_state, instruction_opcode, instruction_func, reset, processor_enable)
 begin
+    -- set to defaults
+    register_destination <= '0';
+    memory_to_register <= '0';
+    memory_write <= '0';
+    alu_source <= '0';
+    register_write <= '0';
+    shift_swap <= '0';
+    jump <= '0';
+    pc_enable <= '0';
+    alu_func <= FUNCTION_PASSTHROUGH;
+    
     if processor_enable = '1' and reset = '1' then
         next_state <= fetch;
     else
-        -- set to defaults
-        register_destination <= '0';
-        memory_to_register <= '0';
-        memory_write <= '0';
-        alu_source <= '0';
-        register_write <= '0';
-        shift_swap <= '0';
-        jump <= '0';
-        pc_enable <= '0';
-        alu_func <= FUNCTION_PASSTHROUGH;
-
         case current_state is
             when fetch =>
                 next_state <= execute;
