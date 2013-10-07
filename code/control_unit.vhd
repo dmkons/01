@@ -66,10 +66,11 @@ begin
 			next_state <= execute;
 
      when execute =>
-              
+	  
+			-- set to defaults
 			next_state <= fetch;
-            pc_enable <= '1';
-            alu_func <= instruction_func;
+			pc_enable <= '1';
+			alu_func <= instruction_func;
 			
 			case instruction_opcode is
 				when OPCODE_R_ALL =>
@@ -106,11 +107,13 @@ begin
 						alu_source <= '1';
 						register_write <= '1';
 						next_state <= stall;
+						pc_enable <= '0';
 					
 				when OPCODE_SW =>
 						memory_write <= '1';
 						alu_source <= '1';
 						next_state <= stall;
+						pc_enable <= '0';
 						
 				when OPCODE_J =>
 						jump <= '1';
@@ -121,6 +124,7 @@ begin
     
 	 when stall =>
 		next_state <= fetch;
+		pc_enable <= '1';
 
   end case; -- end instruction_opcode
 end process;
