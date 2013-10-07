@@ -13,15 +13,19 @@ ARCHITECTURE behavior OF tb_contro_unit IS
     -- Component Declaration for the Unit Under Test (UUT)
  
     COMPONENT control_unit
+    generic (
+        OPCODE_SIZE : integer := OPCODE_SIZE;
+        FUNCTION_SIZE : integer := FUNCTION_SIZE
+    );
     PORT(
          clock : IN  std_logic;
-         instruction_opcode : IN  std_logic_vector(5 downto 0);
-         instruction_func : IN  std_logic_vector(5 downto 0);
+         instruction_opcode : IN  std_logic_vector(OPCODE_SIZE-1 downto 0);
+         instruction_func : IN  std_logic_vector(FUNCTION_SIZE-1 downto 0);
          processor_enable : IN  std_logic;
          reset : IN  std_logic;
          register_destination : OUT  std_logic;
          memory_to_register : OUT  std_logic;
-         alu_func : OUT  std_logic_vector(5 downto 0);
+         alu_func : OUT  std_logic_vector(FUNCTION_SIZE-1 downto 0);
          memory_write : OUT  std_logic;
          alu_source : OUT  std_logic;
          register_write : OUT  std_logic;
@@ -75,9 +79,9 @@ BEGIN
    -- Clock process definitions
    clock_process :process
    begin
-		clock <= '0';
-		wait for clock_period/2;
 		clock <= '1';
+		wait for clock_period/2;
+		clock <= '0';
 		wait for clock_period/2;
    end process;
  
@@ -87,17 +91,18 @@ BEGIN
    begin		
       -- hold reset state for 100 ns.
 
-      wait for clock_period*10.5;
+      
 
 
 		-- Test state machine fetch -> execute(add) -> fetch -> execute(add) -> fetch
-         processor_enable <= '1';
-         reset <= '1';
-			wait for clock_period;
+             processor_enable <= '1';
+             reset <= '1';
+            wait for clock_period*10;
 			reset <= '0';
 			instruction_opcode <= OPCODE_R_ALL;
-         instruction_func <= FUNCTION_ADD;
-			wait for clock_period;
+            instruction_func <= FUNCTION_ADD;
+			wait for clock_period*3;
+            wait for clock_period*0.5;
 			test("EXE1", "execute add register_destination", register_destination, '1');
 			test("EXE1", "execute add memory_to_register", memory_to_register, '0');
 			test("EXE1", "execute add memory_write", memory_write, '0');
@@ -106,9 +111,10 @@ BEGIN
 			test("EXE1", "execute add shift_swap", shift_swap, '0');
 			test("EXE1", "execute add jump", jump, '0');
 			test("EXE1", "execute add pc_enable", pc_enable, '1');
-			test("EXE1", "execute add alu_func", alu_func, FUNCTION_ADD);
+			test("EXE1", "execute add alu_func", alu_func, FUNCTION_ADD);       
+            wait for clock_period*0.5;
 			wait for clock_period;
-			wait for clock_period;
+			wait for clock_period*0.5;
 			test("EXE2", "execute add register_destination", register_destination, '1');
 			test("EXE2", "execute add memory_to_register", memory_to_register, '0');
 			test("EXE2", "execute add memory_write", memory_write, '0');
@@ -118,6 +124,7 @@ BEGIN
 			test("EXE2", "execute add jump", jump, '0');
 			test("EXE2", "execute add pc_enable", pc_enable, '1');
 			test("EXE2", "execute add alu_func", alu_func, FUNCTION_ADD);
+			wait for clock_period*0.5;
 			
 		-- Test state machine fetch -> execute lw -> stall -> fetch -> execute lw
          processor_enable <= '1';
@@ -127,6 +134,8 @@ BEGIN
 			instruction_opcode <= OPCODE_LW;
 			instruction_func <= FUNCTION_PASSTHROUGH;
 			wait for clock_period;
+            
+			wait for clock_period*0.5;
 			test("EXE3", "execute lw register_destination", register_destination, '0');
 			test("EXE3", "execute lw memory_to_register", memory_to_register, '1');
 			test("EXE3", "execute lw memory_write", memory_write, '0');
@@ -156,6 +165,7 @@ BEGIN
 			test("EXE5", "execute lw jump", jump, '0');
 			test("EXE5", "execute lw pc_enable", pc_enable, '0');
 			test("EXE5", "execute lw alu_func", alu_func, FUNCTION_PASSTHROUGH);
+			wait for clock_period*0.5;
 			
 		-- Test that OPCODE_ADDI | OPCODE_ADDIU | OPCODE_ANDI | OPCODE_ORI 
 		-- | OPCODE_XORI | OPCODE_LUI | OPCODE_SLTI | OPCODE_SLTIU => 
@@ -168,6 +178,7 @@ BEGIN
 			instruction_opcode <= OPCODE_ADDI;
 			instruction_func <= FUNCTION_PASSTHROUGH;
 			wait for clock_period;
+			wait for clock_period*0.5;
 			test("ADDI", "execute ADDI register_destination", register_destination, '0');
 			test("ADDI", "execute ADDI memory_to_register", memory_to_register, '0');
 			test("ADDI", "execute ADDI memory_write", memory_write, '0');
@@ -176,19 +187,21 @@ BEGIN
 			test("ADDI", "execute ADDI shift_swap", shift_swap, '0');
 			test("ADDI", "execute ADDI jump", jump, '0');
 			test("ADDI", "execute ADDI pc_enable", pc_enable, '1');
-			test("ADDI", "execute ADDI alu_func", alu_func, FUNCTION_PASSTHROUGH);
+			test("ADDI", "execute ADDI alu_func", alu_func, FUNCTION_PASSTHROUGH);  
+			wait for clock_period*0.5;
 	
 				
 		-- Test that OPCODE_BEQ | OPCODE_BGEZ | OPCODE_BGTZ  | OPCODE_BLEZ  
 		-- | OPCODE_BNE => alu_func = FUNCTION_SUB
 			
 			processor_enable <= '1';
-         reset <= '1';
+            reset <= '1';
 			wait for clock_period;
 			reset <= '0';
 			instruction_opcode <= OPCODE_BEQ;
 			instruction_func <= FUNCTION_PASSTHROUGH;
 			wait for clock_period;
+			wait for clock_period*0.5;
 			test("BEQ", "execute BEQ register_destination", register_destination, '0');
 			test("BEQ", "execute BEQ memory_to_register", memory_to_register, '0');
 			test("BEQ", "execute BEQ memory_write", memory_write, '0');
@@ -198,6 +211,8 @@ BEGIN
 			test("BEQ", "execute BEQ jump", jump, '0');
 			test("BEQ", "execute BEQ pc_enable", pc_enable, '1');
 			test("BEQ", "execute BEQ alu_func", alu_func, FUNCTION_SUB);
+            
+			wait for clock_period*0.5;
 			
 		-- Test OPCODE_LW => memory_to_register = alu_source = register_write = 1
 		-- and pc_enable = 0
@@ -209,6 +224,7 @@ BEGIN
 			instruction_opcode <= OPCODE_LW;
 			instruction_func <= FUNCTION_PASSTHROUGH;
 			wait for clock_period;
+			wait for clock_period*0.5;
 			test("LW", "execute LW register_destination", register_destination, '0');
 			test("LW", "execute LW memory_to_register", memory_to_register, '1');
 			test("LW", "execute LW memory_write", memory_write, '0');
@@ -218,6 +234,7 @@ BEGIN
 			test("LW", "execute LW jump", jump, '0');
 			test("LW", "execute LW pc_enable", pc_enable, '0');
 			test("LW", "execute LW alu_func", alu_func, FUNCTION_PASSTHROUGH);
+			wait for clock_period*0.5;
 			
 		-- Test OPCODE_SW => memory_write = alu_source = 1 and pc_enable = 0
 			
@@ -228,6 +245,7 @@ BEGIN
 			instruction_opcode <= OPCODE_SW;
 			instruction_func <= FUNCTION_PASSTHROUGH;
 			wait for clock_period;
+			wait for clock_period*0.5;
 			test("SW", "execute SW register_destination", register_destination, '0');
 			test("SW", "execute SW memory_to_register", memory_to_register, '0');
 			test("SW", "execute SW memory_write", memory_write, '1');
@@ -237,6 +255,7 @@ BEGIN
 			test("SW", "execute SW jump", jump, '0');
 			test("SW", "execute SW pc_enable", pc_enable, '0');
 			test("SW", "execute SW alu_func", alu_func, FUNCTION_PASSTHROUGH);
+			wait for clock_period*0.5;
 			
 		-- Test OPCODE_J => jump = 1
 			
@@ -247,6 +266,7 @@ BEGIN
 			instruction_opcode <= OPCODE_J;
 			instruction_func <= FUNCTION_PASSTHROUGH;
 			wait for clock_period;
+			wait for clock_period*0.5;
 			test("J", "execute J register_destination", register_destination, '0');
 			test("J", "execute J memory_to_register", memory_to_register, '0');
 			test("J", "execute J memory_write", memory_write, '0');
@@ -256,6 +276,7 @@ BEGIN
 			test("J", "execute J jump", jump, '1');
 			test("J", "execute J pc_enable", pc_enable, '1');
 			test("J", "execute J alu_func", alu_func, FUNCTION_PASSTHROUGH);
+			wait for clock_period*0.5;
 			
 		-- Test R_ALL & instruction_function != FUNCTION_SLL | FUNCTION_SRL => 
 		-- register_destination = register_write = 1 and shift_swap = 0
@@ -266,6 +287,7 @@ BEGIN
 			instruction_opcode <= OPCODE_R_ALL;
 			instruction_func <= FUNCTION_ADD;
 			wait for clock_period;
+			wait for clock_period*0.5;
 			test("ALL!SH", "execute ADD and no shift register_destination", register_destination, '1');
 			test("ALL!SH", "execute ADD and no shift memory_to_register", memory_to_register, '0');
 			test("ALL!SH", "execute ADD and no shift memory_write", memory_write, '0');
@@ -275,6 +297,7 @@ BEGIN
 			test("ALL!SH", "execute ADD and no shift jump", jump, '0');
 			test("ALL!SH", "execute ADD and no shift pc_enable", pc_enable, '1');
 			test("ALL!SH", "execute ADD and no shift alu_func", alu_func, FUNCTION_ADD);
+			wait for clock_period*0.5;
 
 		-- Test R_ALL & instruction_function = FUNCTION_SLL | FUNCTION_SRL => 
 		-- register_destination = register_write = shift_swap = 1
@@ -285,6 +308,7 @@ BEGIN
 			instruction_opcode <= OPCODE_R_ALL;
 			instruction_func <= FUNCTION_SLL;
 			wait for clock_period;
+			wait for clock_period*0.5;
 			test("ALLSH", "execute ADD and shift register_destination", register_destination, '1');
 			test("ALLSH", "execute ADD and shift memory_to_register", memory_to_register, '0');
 			test("ALLSH", "execute ADD and shift memory_write", memory_write, '0');
@@ -294,6 +318,7 @@ BEGIN
 			test("ALLSH", "execute ADD and shift jump", jump, '0');
 			test("ALLSH", "execute ADD and shift pc_enable", pc_enable, '1');
 			test("ALLSH", "execute ADD and shift alu_func", alu_func, FUNCTION_SLL);
+			wait for clock_period*0.5;
 
       wait;
    end process;

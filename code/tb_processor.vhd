@@ -74,9 +74,10 @@ BEGIN
    begin
       reset <= '1';
       processor_enable <= '1';
-      wait for clk_period * 11;
+      wait for clk_period * 10.5;
       
       reset <= '0';
+      wait for clk_period * 0.5;
       
       -- load CAFE to R1
       imem_data_in <= OPCODE_LLI & R1 & R1 & X"CAFE";
@@ -94,7 +95,7 @@ BEGIN
       imem_data_in <= OPCODE_R_ALL & R1 & R2 & R3 & "00000" & FUNCTION_OR;
       wait for clk_period * 2;
      
-      -- store CAFEBABE to address 0
+      -- store CAFEBABE to address 1
       imem_data_in <= OPCODE_SW & R0 & R3 & "0000000000000001";
       wait for clk_period*1.5;
       test("cafebabe", "dmem write enable", dmem_write_enable, '1');
