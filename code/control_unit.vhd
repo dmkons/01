@@ -71,16 +71,17 @@ begin
         case current_state is
             when fetch =>
                 next_state <= execute;
+                memory_write <= '0';
 
          when execute =>
                   
                 -- set to defaults
                 next_state <= fetch;
                 pc_enable <= '1';
-                alu_func <= instruction_func;
                 
                 case instruction_opcode is
                     when OPCODE_R_ALL =>
+                    alu_func <= instruction_func;
                         case instruction_func is 
                             when FUNCTION_SLL -- shift logical cases
                                 | FUNCTION_SRL =>
@@ -92,13 +93,34 @@ begin
                         register_write <= '1';
                     
                     when OPCODE_ADDI
-                        | OPCODE_ADDIU
-                        | OPCODE_ANDI
-                        | OPCODE_ORI
-                        | OPCODE_XORI
-                        | OPCODE_LLI
-                        | OPCODE_SLTI
+                        | OPCODE_ADDIU =>
+                            alu_func <= FUNCTION_ADD;
+                            alu_source <= '1';
+                            register_write <= '1';
+                        
+                        
+                    when OPCODE_ANDI =>
+                            alu_func <= FUNCTION_AND;
+                            alu_source <= '1';
+                            register_write <= '1';
+                            
+                    when OPCODE_ORI =>
+                            alu_func <= FUNCTION_OR;
+                            alu_source <= '1';
+                            register_write <= '1';
+                            
+                    when OPCODE_XORI =>
+                            alu_func <= FUNCTION_XOR;
+                            alu_source <= '1';
+                            register_write <= '1';
+                            
+                    when OPCODE_LLI =>
+                            alu_source <= '1';
+                            register_write <= '1';
+                            
+                    when OPCODE_SLTI
                         | OPCODE_SLTIU =>
+                            alu_func <= FUNCTION_SLT;
                             alu_source <= '1';
                             register_write <= '1';					
                         

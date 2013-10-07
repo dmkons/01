@@ -7,7 +7,6 @@ use work.opcodes.all;
 entity alu is
     generic (WORD_SIZE: natural; FUNCTION_SIZE: natural);
 port ( 
-    signal clk : in  std_logic;
     signal x : in  signed(WORD_SIZE-1 downto 0);
     signal y : in  signed(WORD_SIZE-1 downto 0);
     signal r : out  signed(WORD_SIZE-1 downto 0);
@@ -21,14 +20,13 @@ architecture behavioral of alu is
 
 begin
 
-   process(clk, x, y, func)
+   process(x, y, func)
        
     -- used when we need a wider answer at first to determine flags
     variable r_wide : signed (32 downto 0) := (others => '0');
     -- used when we need a non-wide, but still readable answer to determine flags
     variable r_readable : signed (31 downto 0) := (others => '0');
    begin
-      if rising_edge(clk) then
          case func is
 				when FUNCTION_ADD =>
 					r_readable := x + y;
@@ -136,9 +134,8 @@ begin
 					r <= y;
 				
 				when others =>
-					null;
+                    null;
 			end case;
-		end if;
    end process;
 
 end architecture;

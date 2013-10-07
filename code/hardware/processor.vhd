@@ -31,7 +31,6 @@ architecture behavioral of processor is
             FUNCTION_SIZE : integer := FUNCTION_SIZE
         );
 		port (
-        clk         : in std_logic;
 		X			: in signed(WORD_SIZE-1 downto 0);
 		Y			: in signed(WORD_SIZE-1 downto 0);
 		FUNC	    : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
@@ -206,7 +205,6 @@ begin
 	MAIN_ALU:   alu
 		-- the ALU between Registers and Data memory on the suggested architecture
 		port map (
-            CLK => clk,
 			X => signed(MUX_shift_swap_out),
 			Y => signed(MUX_alu_source_zero_override_out),
 			R => alu1_result,
@@ -294,7 +292,8 @@ begin
 			RT => read_data_2
         );
 		
-        process (alu1_result)
+        process (alu1_result, read_data_1, read_data_2, clk)
+            variable alu1_result_slv : std_logic_vector(MEM_DATA_BUS-1 downto 0);
         begin
             dmem_address <= std_logic_vector(resize(unsigned(alu1_result), dmem_address'length));
         end process;

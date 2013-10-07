@@ -17,7 +17,6 @@ ARCHITECTURE behavior OF tb_alu IS
             FUNCTION_SIZE : integer := FUNCTION_SIZE
         );
     PORT(
-         clk : IN  std_logic;
          x : IN  signed(WORD_SIZE-1 downto 0);
          y : IN  signed(WORD_SIZE-1 downto 0);
          r : OUT  signed(WORD_SIZE-1 downto 0);
@@ -42,7 +41,6 @@ ARCHITECTURE behavior OF tb_alu IS
 BEGIN
  
    uut: alu PORT MAP (
-          clk => clk,
           x => x,
           y => y,
           r => r,
