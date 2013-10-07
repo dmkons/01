@@ -4,7 +4,11 @@ use work.mips_constant_pkg.all;
 use work.opcodes.all;
 
 entity control_unit is
-    generic ( OPCODE_SIZE: natural; FUNCTION_SIZE: natural);
+
+
+
+
+     generic ( OPCODE_SIZE: natural; FUNCTION_SIZE: natural);
     Port ( 
 			  clock : in std_logic;
 			  instruction_opcode : in std_logic_vector(OPCODE_SIZE-1 downto 0);
