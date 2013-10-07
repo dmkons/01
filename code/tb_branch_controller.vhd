@@ -55,9 +55,7 @@ BEGIN
    -- Clock process definitions
    clk_process :process
    begin
---		<clock> <= '0';
 		wait for clk_period/2;
---		<clock> <= '1';
 		wait for clk_period/2;
    end process;
  
