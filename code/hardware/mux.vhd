@@ -21,7 +21,7 @@ begin
         ELSE
             MUX_OUT <= MUX_IN_1;
         end if;
-	end process; -- MUX_PROC
+    end process; -- MUX_PROC
 
 end; -- Behavioral
 
