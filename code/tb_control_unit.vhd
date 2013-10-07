@@ -5,10 +5,10 @@ use work.mips_constant_pkg.all;
 use work.opcodes.all;
 use work.test_utils.all;
  
-ENTITY tb_contro_unit IS
-END tb_contro_unit;
+ENTITY tb_control_unit IS
+END tb_control_unit;
  
-ARCHITECTURE behavior OF tb_contro_unit IS 
+ARCHITECTURE behavior OF tb_control_unit IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
  
