@@ -13,8 +13,6 @@ entity control_unit is
               
 			  reset : in std_logic;
               
-              
-				
               register_destination : out std_logic;
 			  memory_to_register : out std_logic;
               alu_func : out std_logic_vector(FUnCTION_SIZE-1 downto 0);
@@ -39,96 +37,98 @@ begin
 process (clock, reset, processor_enable)
 begin
     if processor_enable = '1' then
-        if (reset='1') then
-            current_state <= fetch;
-        elsif (rising_edge(clock)) then
+        if reset='1' then
+            current_state <= stall;
+        elsif rising_edge(clock) then
             current_state <= next_state;
         end if;
     end if;
 end process;
 
 
-process (current_state, instruction_opcode, instruction_func)
+process (current_state, instruction_opcode, instruction_func, reset, processor_enable)
 begin
-    
-    
-    -- set to defaults
-    register_destination <= '0';
-    memory_to_register <= '0';
-    memory_write <= '0';
-    alu_source <= '0';
-    register_write <= '0';
-    shift_swap <= '0';
-    jump <= '0';
-    pc_enable <= '0';
-    alu_func <= FUNCTION_PASSTHROUGH;
+    if processor_enable = '1' and reset = '1' then
+        next_state <= fetch;
+    else
+        -- set to defaults
+        register_destination <= '0';
+        memory_to_register <= '0';
+        memory_write <= '0';
+        alu_source <= '0';
+        register_write <= '0';
+        shift_swap <= '0';
+        jump <= '0';
+        pc_enable <= '0';
+        alu_func <= FUNCTION_PASSTHROUGH;
 
-	case current_state is
-		when fetch =>
-			next_state <= execute;
+        case current_state is
+            when fetch =>
+                next_state <= execute;
 
-     when execute =>
-	  
-			-- set to defaults
-			next_state <= fetch;
-			pc_enable <= '1';
-			alu_func <= instruction_func;
-			
-			case instruction_opcode is
-				when OPCODE_R_ALL =>
-                    case instruction_func is 
-                        when FUNCTION_SLL -- shift logical cases
-                            | FUNCTION_SRL =>
-                            shift_swap <= '1';
-                        when others =>
-                        -- do nothing
-                     end case; -- end instruction_func
-                    register_destination <= '1';
-                    register_write <= '1';
-				
-				when OPCODE_ADDI
-					| OPCODE_ADDIU
-					| OPCODE_ANDI
-					| OPCODE_ORI
-					| OPCODE_XORI
-					| OPCODE_LUI
-					| OPCODE_SLTI
-					| OPCODE_SLTIU =>
-						alu_source <= '1';
-						register_write <= '1';					
-					
-				when OPCODE_BEQ 
-					| OPCODE_BGEZ
-					| OPCODE_BGTZ 
-					| OPCODE_BLEZ 
-					| OPCODE_BNE =>
-						alu_func <= FUNCTION_SUB;
-						
-				when OPCODE_LW =>
-						memory_to_register <= '1';
-						alu_source <= '1';
-						register_write <= '1';
-						next_state <= stall;
-						pc_enable <= '0';
-					
-				when OPCODE_SW =>
-						memory_write <= '1';
-						alu_source <= '1';
-						next_state <= stall;
-						pc_enable <= '0';
-						
-				when OPCODE_J =>
-						jump <= '1';
-				
-				when others => 
-			end case;
-					
-    
-	 when stall =>
-		next_state <= fetch;
-		pc_enable <= '1';
+         when execute =>
+                  
+                -- set to defaults
+                next_state <= fetch;
+                pc_enable <= '1';
+                alu_func <= instruction_func;
+                
+                case instruction_opcode is
+                    when OPCODE_R_ALL =>
+                        case instruction_func is 
+                            when FUNCTION_SLL -- shift logical cases
+                                | FUNCTION_SRL =>
+                                shift_swap <= '1';
+                            when others =>
+                            -- do nothing
+                         end case; -- end instruction_func
+                        register_destination <= '1';
+                        register_write <= '1';
+                    
+                    when OPCODE_ADDI
+                        | OPCODE_ADDIU
+                        | OPCODE_ANDI
+                        | OPCODE_ORI
+                        | OPCODE_XORI
+                        | OPCODE_LLI
+                        | OPCODE_SLTI
+                        | OPCODE_SLTIU =>
+                            alu_source <= '1';
+                            register_write <= '1';					
+                        
+                    when OPCODE_BEQ 
+                        | OPCODE_BGEZ
+                        | OPCODE_BGTZ 
+                        | OPCODE_BLEZ 
+                        | OPCODE_BNE =>
+                            alu_func <= FUNCTION_SUB;
+                            
+                    when OPCODE_LW =>
+                            memory_to_register <= '1';
+                            alu_source <= '1';
+                            register_write <= '1';
+                            next_state <= stall;
+                            pc_enable <= '0';
+                        
+                    when OPCODE_SW =>
+                            memory_write <= '1';
+                            alu_source <= '1';
+                            next_state <= stall;
+                            pc_enable <= '0';
+                            
+                    when OPCODE_J =>
+                            jump <= '1';
+                    
+                    when others => 
+                end case;
+                        
+        
+         when stall =>
+            next_state <= fetch;
+            pc_enable <= '1';
 
-  end case; -- end instruction_opcode
+      end case; -- end instruction_opcode
+  end if;
 end process;
 
 

@@ -92,7 +92,7 @@ BEGIN
       
       wait for 2 * clock_period;
       
-      instruction_opcode <= OPCODE_LW;
+      instruction_opcode <= OPCODE_LDI;
       
       wait;
    end process;

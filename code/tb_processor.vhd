@@ -2,7 +2,9 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 use work.mips_constant_pkg.all;
- 
+use work.opcodes.all;
+use work.test_utils.all;
+
 ENTITY tb_processor IS
 END tb_processor;
  
@@ -60,24 +62,46 @@ BEGIN
    -- Clock process definitions
    clk_process :process
    begin
-		clk <= '0';
-		wait for clk_period/2;
 		clk <= '1';
+		wait for clk_period/2;
+		clk <= '0';
 		wait for clk_period/2;
    end process;
  
 
    -- Stimulus process
    stim_proc: process
-   begin		
-      
+   begin
       reset <= '1';
-      wait for clk_period * 5.5;	
-      reset <= '0';
       processor_enable <= '1';
-      imem_data_in <= "00000000000000000000000000100000";
+      wait for clk_period * 11;
       
-      wait for clk_period * 3;
+      reset <= '0';
+      
+      -- load CAFE to R1
+      imem_data_in <= OPCODE_LLI & R1 & R1 & X"CAFE";
+      wait for clk_period * 2;
+      
+      -- load BABE to R2
+      imem_data_in <= OPCODE_LLI & R2 & R2 & X"BABE";
+      wait for clk_period * 2;
+      
+      -- logically shift CAFE to the left by 16
+      imem_data_in <= OPCODE_R_ALL & R1 & R1 & R1 & "10000" & FUNCTION_SLL;
+      wait for clk_period * 2;
+      
+      -- OR together CAFE and BABE
+      imem_data_in <= OPCODE_R_ALL & R1 & R2 & R3 & "00000" & FUNCTION_OR;
+      wait for clk_period * 2;
+     
+      -- store CAFEBABE to address 0
+      imem_data_in <= OPCODE_SW & R0 & R3 & "0000000000000001";
+      wait for clk_period;
+      test("cafebabe", "dmem write enable", dmem_write_enable, '1');
+      test("cafebabe", "address", dmem_address_wr, "00000001");
+      test("cafebabe", "data", dmem_data_out, X"CAFEBABE");
+      wait for clk_period;
+      
 
       
 
