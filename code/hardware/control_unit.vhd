@@ -30,7 +30,7 @@ end control_unit;
 
 architecture behavioral of control_unit is
 
-    type state_type is (fetch, execute, stall);
+    type state_type is (FETCH, EXECUTE, STALL);
     signal current_state, next_state: state_type;
 
 begin
@@ -43,7 +43,7 @@ begin
                 current_state <= next_state;
 
                 if reset = '1' then
-                    current_state <= stall;
+                    current_state <= STALL;
                 end if;
             end if;
         end if;
@@ -64,17 +64,17 @@ begin
         alu_func <= FUNCTION_PASSTHROUGH;
 
         if processor_enable = '1' and reset = '1' then
-            next_state <= fetch;
+            next_state <= FETCH;
         else
             case current_state is
-                when fetch =>
-                    next_state <= execute;
+                when FETCH =>
+                    next_state <= EXECUTE;
                     memory_write <= '0';
 
-                when execute =>
+                when EXECUTE =>
 
                 -- set to defaults
-                    next_state <= fetch;
+                    next_state <= FETCH;
                     pc_enable <= '1';
 
                     case instruction_opcode is
@@ -133,13 +133,13 @@ begin
                             memory_to_register <= '1';
                             alu_source <= '1';
                             register_write <= '1';
-                            next_state <= stall;
+                            next_state <= STALL;
                             pc_enable <= '0';
 
                         when OPCODE_SW =>
                             memory_write <= '1';
                             alu_source <= '1';
-                            next_state <= stall;
+                            next_state <= STALL;
                             pc_enable <= '0';
 
                         when OPCODE_J =>
@@ -149,8 +149,8 @@ begin
                     end case;
 
 
-                when stall =>
-                    next_state <= fetch;
+                when STALL =>
+                    next_state <= FETCH;
                     pc_enable <= '1';
 
             end case; -- end instruction_opcode
