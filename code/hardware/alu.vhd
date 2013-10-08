@@ -27,6 +27,14 @@ begin
     -- used when we need a non-wide, but still readable answer to determine flags
     variable r_readable : signed (31 downto 0) := (others => '0');
    begin
+        
+        -- set defaults
+        flags.carry <= '0';
+        flags.overflow <= '0';
+        flags.negative <= '0';
+        flags.zero <= '0';
+        r <= X"00000000";
+   
          case func is
 				when FUNCTION_ADD =>
 					r_readable := x + y;
