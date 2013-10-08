@@ -15,7 +15,7 @@ port (
 );
 end entity;
 
-architecture behavioral of alu is
+architecture Behavioral of alu is
 
 
 begin

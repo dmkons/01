@@ -1,31 +1,31 @@
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
 
-entity PC is
+entity pc is
     generic (N :NATURAL);
-    Port ( CLK	: in  STD_LOGIC;
-			  PC_IN : in  STD_LOGIC_VECTOR (N-1 downto 0);
+    Port ( clk	: in  std_logic;
+			  pc_in : in  std_logic_VECTOR (N-1 downto 0);
               reset : in std_logic;
               pc_enable : in std_logic;
-           PC_OUT : out  STD_LOGIC_VECTOR (N-1 downto 0));
-end PC;
+           pc_out : out  std_logic_VECTOR (N-1 downto 0));
+end pc;
 
-architecture Behavioral of PC is
+architecture Behavioral of pc is
 
 begin
 
-	PC_PROC: process(CLK, pc_enable)
+	pc_proc: process(clk, pc_enable)
 	begin	
-		if rising_edge (CLK) then
+		if rising_edge (clk) then
             if reset = '1' then
                 pc_out <= (others => '0');
             else
                 if pc_enable = '1' then
-                    PC_OUT <= PC_IN;
+                    pc_out <= pc_in;
                 end if;
             end if;
 		end if;
-	end process PC_PROC;
+	end process pc_proc;
 
 end Behavioral;
 

@@ -1,7 +1,7 @@
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use WORK.MIPS_CONSTANT_PKG.ALL;
+use work.mips_constant_pkg.all;
 
 entity processor is
 	generic (
@@ -10,20 +10,20 @@ entity processor is
 		);
 		
     Port (
-		clk : in STD_LOGIC;
-		reset               : in STD_LOGIC;
-		processor_enable	: in  STD_LOGIC;
-		imem_data_in 		: in  STD_LOGIC_VECTOR (MEM_DATA_BUS-1 downto 0);
-		dmem_data_in 		: in  STD_LOGIC_VECTOR (MEM_DATA_BUS-1 downto 0);
-		imem_address 		: out  STD_LOGIC_VECTOR (MEM_ADDR_BUS-1 downto 0);
-		dmem_address 		: out  STD_LOGIC_VECTOR (MEM_ADDR_BUS-1 downto 0);
-		dmem_address_wr	    : out  STD_LOGIC_VECTOR (MEM_ADDR_BUS-1 downto 0);
-		dmem_data_out		: out  STD_LOGIC_VECTOR (MEM_DATA_BUS-1 downto 0);
-		dmem_write_enable	: out  STD_LOGIC
+		clk : in std_logic;
+		reset               : in std_logic;
+		processor_enable	: in  std_logic;
+		imem_data_in 		: in  std_logic_VECTOR (MEM_DATA_BUS-1 downto 0);
+		dmem_data_in 		: in  std_logic_VECTOR (MEM_DATA_BUS-1 downto 0);
+		imem_address 		: out  std_logic_VECTOR (MEM_ADDR_BUS-1 downto 0);
+		dmem_address 		: out  std_logic_VECTOR (MEM_ADDR_BUS-1 downto 0);
+		dmem_address_wr	    : out  std_logic_VECTOR (MEM_ADDR_BUS-1 downto 0);
+		dmem_data_out		: out  std_logic_VECTOR (MEM_DATA_BUS-1 downto 0);
+		dmem_write_enable	: out  std_logic
 	);
 end processor;
 
-architecture behavioral of processor is
+architecture Behavioral of processor is
 
 	component alu is
         generic (
@@ -31,39 +31,39 @@ architecture behavioral of processor is
             FUNCTION_SIZE : integer := FUNCTION_SIZE
         );
 		port (
-		X			: in signed(WORD_SIZE-1 downto 0);
-		Y			: in signed(WORD_SIZE-1 downto 0);
-		FUNC	    : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
-		R			: out signed(WORD_SIZE-1 downto 0);
-		FLAGS		: out alu_flags
+		x			: in signed(WORD_SIZE-1 downto 0);
+		y			: in signed(WORD_SIZE-1 downto 0);
+		func	    : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
+		r			: out signed(WORD_SIZE-1 downto 0);
+		flags		: out alu_flags
 		);
 	end component;
 	
-    component PC is
+    component pc is
 		generic (
-			N: integer := MEM_ADDR_COUNT
+			n: integer := MEM_ADDR_COUNT
 		);
         port (
-            CLK     : in STD_LOGIC;
-            PC_IN   : in  STD_LOGIC_VECTOR (N-1 downto 0);
-            RESET : in std_logic;
+            clk     : in std_logic;
+            pc_in   : in  std_logic_VECTOR (N-1 downto 0);
+            reset : in std_logic;
             pc_enable : in std_logic;
-            PC_OUT  : out  STD_LOGIC_VECTOR (N-1 downto 0)
+            pc_out  : out  std_logic_VECTOR (N-1 downto 0)
         );
     end component;
     
     -- the Registers block
     component register_file is
         port (
-			CLK 			:	in	STD_LOGIC;
-			RESET			:	in	STD_LOGIC;
-			RW				:	in	STD_LOGIC;
-			RS_ADDR 		:	in	STD_LOGIC_VECTOR (RADDR_BUS-1 downto 0); 
-			RT_ADDR 		:	in	STD_LOGIC_VECTOR (RADDR_BUS-1 downto 0); 
-			RD_ADDR 		:	in	STD_LOGIC_VECTOR (RADDR_BUS-1 downto 0);
-			WRITE_DATA		:	in	STD_LOGIC_VECTOR (DDATA_BUS-1 downto 0); 
-			RS				:	out	STD_LOGIC_VECTOR (DDATA_BUS-1 downto 0);
-			RT				:	out	STD_LOGIC_VECTOR (DDATA_BUS-1 downto 0)
+			clk 			:	in	std_logic;
+			reset			:	in	std_logic;
+			rw				:	in	std_logic;
+			rs_addr 		:	in	std_logic_VECTOR (RADDR_BUS-1 downto 0); 
+			rt_addr 		:	in	std_logic_VECTOR (RADDR_BUS-1 downto 0); 
+			rd_addr 		:	in	std_logic_VECTOR (RADDR_BUS-1 downto 0);
+			write_data		:	in	std_logic_VECTOR (DDATA_BUS-1 downto 0); 
+			rs				:	out	std_logic_VECTOR (DDATA_BUS-1 downto 0);
+			rt				:	out	std_logic_VECTOR (DDATA_BUS-1 downto 0)
         );
     end component;
 	 
@@ -95,19 +95,19 @@ architecture behavioral of processor is
          
      -- all the multiplexors
      -- (all them multiplexors)
-     component MUX is
+     component mux is
         generic (
-            N: natural := MEM_DATA_BUS
+            n: natural := MEM_DATA_BUS
         );
         port (
-            MUX_ENABLE : in STD_LOGIC;
-            MUX_IN_0 : in  STD_LOGIC_VECTOR (N-1 downto 0);
-            MUX_IN_1 : in  STD_LOGIC_VECTOR (N-1 downto 0);
-            MUX_OUT : out  STD_LOGIC_VECTOR (N-1 downto 0)
+            mux_enable : in std_logic;
+            mux_in_0 : in  std_logic_VECTOR (N-1 downto 0);
+            mux_in_1 : in  std_logic_VECTOR (N-1 downto 0);
+            mux_out : out  std_logic_VECTOR (N-1 downto 0)
         );
-     end component MUX; --end multiplexorz 
+     end component mux; --end multiplexorz 
      
-	 component BRANCH_CONTROLLER is
+	 component branch_controller is
         generic (
             OPCODE_SIZE : integer := OPCODE_SIZE;
             WORD_SIZE : integer := WORD_SIZE
@@ -119,7 +119,7 @@ architecture behavioral of processor is
 			compare_zero : out std_logic;
 			compare_zero_value : out std_logic_vector(WORD_SIZE-1 downto 0)
 		);
-	 end component BRANCH_CONTROLLER;
+	 end component branch_controller;
 	 
      -- "Registers" read data signals
      signal read_data_1 : std_logic_vector (MEM_DATA_BUS-1 downto 0);
@@ -155,9 +155,9 @@ architecture behavioral of processor is
 	 signal compare_zero_value : std_logic_vector (MEM_DATA_BUS-1 downto 0);
      
      -- mux signals
-     signal MUX_shift_swap_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);  
-     signal MUX_register_destination_out : std_logic_vector(4 downto 0);
-     signal MUX_memory_to_register_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
+     signal mux_shift_swap_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);  
+     signal mux_register_destination_out : std_logic_vector(4 downto 0);
+     signal mux_memory_to_register_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      signal mux_branch_in_0 : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      signal mux_branch_in_1 : std_logic_vector(MEM_DATA_BUS-1 downto 0);
      signal mux_branch_out : std_logic_vector(MEM_DATA_BUS-1 downto 0); 
@@ -173,7 +173,7 @@ architecture behavioral of processor is
 	
 begin
 
-    MAIN_CONTROL_UNIT: control_unit
+    main_control_unit: control_unit
         port map (
         reset => reset,
         clock => CLK,
@@ -193,7 +193,7 @@ begin
         
     );
 
-	MAIN_BRANCH_CONTROLLER: BRANCH_CONTROLLER
+	main_branch_controller: branch_controller
 		port map (
 			flags => alu_flags,
 			instruction_opcode => instruction_opcode,
@@ -202,94 +202,94 @@ begin
 			compare_zero_value => compare_zero_value
 	);
 
-	MAIN_ALU:   alu
+	main_alu:   alu
 		-- the ALU between Registers and Data memory on the suggested architecture
 		port map (
-			X => signed(MUX_shift_swap_out),
-			Y => signed(MUX_alu_source_zero_override_out),
-			R => alu1_result,
-            FLAGS => alu_flags,
-			FUNC => alu_func
+			x => signed(mux_shift_swap_out),
+			y => signed(mux_alu_source_zero_override_out),
+			r => alu1_result,
+            flags => alu_flags,
+			func => alu_func
 		);
 	
-	MAIN_PC: pc generic map (N=>MEM_ADDR_COUNT)
+	main_pc: pc generic map (n=>MEM_ADDR_COUNT)
 		port map (
-			CLK => clk,
-			PC_IN => mux_jump_out(MEM_ADDR_COUNT-1 downto 0),
-			PC_OUT => pc_out,
+			clk => clk,
+			pc_in => mux_jump_out(MEM_ADDR_COUNT-1 downto 0),
+			pc_out => pc_out,
             pc_enable => pc_enable,
-            RESET => reset
+            reset => reset
         );
     
-    MUX_SHIFT_SWAP: MUX generic map (N => 32)
+    mux_shift_swap: mux generic map (N => 32)
         port map (
-            MUX_ENABLE => shift_swap,
-            MUX_IN_0 => read_data_1,
-            MUX_IN_1 => read_data_2,
-            MUX_OUT => MUX_shift_swap_out
+            mux_enable => shift_swap,
+            mux_in_0 => read_data_1,
+            mux_in_1 => read_data_2,
+            mux_out => mux_shift_swap_out
         );
         
-    MUX_REGISTER_DESTINATION: MUX generic map (N => 5)
+    mux_register_destination: mux generic map (n => 5)
         port map (
-            MUX_ENABLE => register_destination,
-            MUX_IN_0 => instruction_register_addr_2,
-            MUX_IN_1 => instruction_register_addr_3,
-            MUX_OUT => mux_register_destination_out
+            mux_enable => register_destination,
+            mux_in_0 => instruction_register_addr_2,
+            mux_in_1 => instruction_register_addr_3,
+            mux_out => mux_register_destination_out
         );
         
-    MUX_MEMORY_TO_REGISTER: MUX generic map (N => 32)
+    mux_memory_to_register: mux generic map (n => 32)
         port map (
-            MUX_ENABLE => memory_to_register,
-            MUX_IN_0 => std_logic_vector(alu1_result),
-            MUX_IN_1 => dmem_data_in,
-            MUX_OUT => mux_memory_to_register_out
+            mux_enable => memory_to_register,
+            mux_in_0 => std_logic_vector(alu1_result),
+            mux_in_1 => dmem_data_in,
+            mux_out => mux_memory_to_register_out
         );
         
         
-	MUX_ALU_SOURCE: MUX generic map (N => 32)
+	mux_alu_source: mux generic map (n => 32)
         port map (
-            MUX_ENABLE => alu_source,
-            MUX_IN_0 => read_data_2,
-            MUX_IN_1 => sign_extend_out,
-            MUX_OUT => MUX_alu_source_out
+            mux_enable => alu_source,
+            mux_in_0 => read_data_2,
+            mux_in_1 => sign_extend_out,
+            mux_out => mux_alu_source_out
         );
 		
-	MUX_ALU_SOURCE_ZERO_OVERRIDE: MUX generic map (N => 32)
+	mux_alu_source_zero_override: mux generic map (n => 32)
 		port map (
-			MUX_ENABLE => compare_zero,
-            MUX_IN_0 => MUX_alu_source_out,
-            MUX_IN_1 => compare_zero_value,
-            MUX_OUT => MUX_alu_source_zero_override_out
+			mux_enable => compare_zero,
+            mux_in_0 => mux_alu_source_out,
+            mux_in_1 => compare_zero_value,
+            mux_out => mux_alu_source_zero_override_out
 		);
         
       
-      MUX_BRANCH: MUX generic map (N => 32)
+      mux_branch: mux generic map (n => 32)
         port map (
-            MUX_ENABLE => branch,
-            MUX_IN_0 => mux_branch_in_0,
-            MUX_IN_1 => mux_branch_in_1,
-            MUX_OUT => mux_branch_out
+            mux_enable => branch,
+            mux_in_0 => mux_branch_in_0,
+            mux_in_1 => mux_branch_in_1,
+            mux_out => mux_branch_out
         );
         
-	MUX_JUMP: MUX generic map (N => 32)
+	mux_jump: mux generic map (n => 32)
         port map (
-            MUX_ENABLE => jump,
-            MUX_IN_0 => mux_branch_out,
-            MUX_IN_1 => jump_address,
-            MUX_OUT => mux_jump_out
+            mux_enable => jump,
+            mux_in_0 => mux_branch_out,
+            mux_in_1 => jump_address,
+            mux_out => mux_jump_out
         );
         
-    MAIN_REGISTER_FILE: register_file
+    main_register_file: register_file
         port map (
-			CLK => clk,				
-			RESET => reset,
-			RW	=> register_write,
-			RS_ADDR => instruction_register_addr_1,
-			RT_ADDR => instruction_register_addr_2,
-			RD_ADDR => mux_register_destination_out,
-			WRITE_DATA => mux_memory_to_register_out,
-			RS => read_data_1,
-			RT => read_data_2
+			clk => clk,				
+			reset => reset,
+			rw	=> register_write,
+			rs_addr => instruction_register_addr_1,
+			rt_addr => instruction_register_addr_2,
+			rd_addr => mux_register_destination_out,
+			write_data => mux_memory_to_register_out,
+			rs => read_data_1,
+			rt => read_data_2
         );
 		
         process (alu1_result, read_data_1, read_data_2, clk)
@@ -339,5 +339,5 @@ begin
             dmem_address_wr <= std_logic_vector(resize(unsigned(alu1_result), dmem_address_wr'length));
         end process;
 		
-end behavioral;
+end Behavioral;
 
