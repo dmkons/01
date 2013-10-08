@@ -18,8 +18,6 @@ ARCHITECTURE behavior OF tb_branch_controller IS
     signal compare_zero_value : std_logic_vector(WORD_SIZE-1 downto 0);
     signal compare_zero : std_logic;
     signal branch : std_logic;
-   -- No clocks detected in port list. Replace <clock> below with 
-   -- appropriate port name 
 
     constant clk_period : time := 10 ns;
 

@@ -1,5 +1,8 @@
-library ieee;
-use ieee.std_logic_1164.all;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+use work.mips_constant_pkg.all;
+use work.opcodes.all;
+use work.test_utils.all;
 
 entity pc is
     generic (N :NATURAL);
