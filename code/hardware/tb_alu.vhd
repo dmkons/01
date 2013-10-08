@@ -1,27 +1,27 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
+library ieee;
+use ieee.std_logic_1164.ALL;
 use ieee.numeric_std.all;
 use work.mips_constant_pkg.all;
 use work.opcodes.all;
 use work.test_utils.all;
 
 
-ENTITY tb_alu IS
-    END tb_alu;
+entity tb_alu is
+    end tb_alu;
 
-ARCHITECTURE behavior OF tb_alu IS 
+architecture behavior of tb_alu is 
 
-    COMPONENT alu
+    component alu
         generic(
                    WORD_SIZE : integer := WORD_SIZE;
                    FUNCTION_SIZE : integer := FUNCTION_SIZE
                );
         PORT(
-                x : IN  signed(WORD_SIZE-1 downto 0);
-                y : IN  signed(WORD_SIZE-1 downto 0);
-                r : OUT  signed(WORD_SIZE-1 downto 0);
-                func : IN  std_logic_vector(FUNCTION_SIZE-1 downto 0);
-                flags : OUT  alu_flags
+                x : in  signed(WORD_SIZE-1 downto 0);
+                y : in  signed(WORD_SIZE-1 downto 0);
+                r : out  signed(WORD_SIZE-1 downto 0);
+                func : in  std_logic_vector(FUNCTION_SIZE-1 downto 0);
+                flags : out  alu_flags
             );
     END COMPONENT;
 
