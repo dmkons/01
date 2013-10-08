@@ -29,7 +29,7 @@ BEGIN
     generic map (
                    WORD_SIZE => WORD_SIZE,
                    FUNCTION_SIZE => FUNCTION_SIZE
-               );
+               )
     PORT MAP (
                           x => x,
                           y => y,
