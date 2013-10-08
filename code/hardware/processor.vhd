@@ -5,21 +5,21 @@ use work.mips_constant_pkg.all;
 
 entity processor is
     generic (
-                MEM_ADDR_BUS		: integer := MEM_ADDR_COUNT;
-                MEM_DATA_BUS		: integer := 32
+                MEM_ADDR_BUS	: integer := MEM_ADDR_COUNT;
+                MEM_DATA_BUS	: integer := 32
             );
 
     Port (
              clk : in std_logic;
-             reset               : in std_logic;
-             processor_enable	: in  std_logic;
-             imem_data_in 		: in  std_logic_VECTOR (MEM_DATA_BUS-1 downto 0);
-             dmem_data_in 		: in  std_logic_VECTOR (MEM_DATA_BUS-1 downto 0);
-             imem_address 		: out  std_logic_VECTOR (MEM_ADDR_BUS-1 downto 0);
-             dmem_address 		: out  std_logic_VECTOR (MEM_ADDR_BUS-1 downto 0);
-             dmem_address_wr	    : out  std_logic_VECTOR (MEM_ADDR_BUS-1 downto 0);
-             dmem_data_out		: out  std_logic_VECTOR (MEM_DATA_BUS-1 downto 0);
-             dmem_write_enable	: out  std_logic
+             reset : in std_logic;
+             processor_enable: in  std_logic;
+             imem_data_in : in std_logic_VECTOR (MEM_DATA_BUS-1 downto 0);
+             dmem_data_in : in std_logic_VECTOR (MEM_DATA_BUS-1 downto 0);
+             imem_address : out std_logic_VECTOR (MEM_ADDR_BUS-1 downto 0);
+             dmem_address : out std_logic_VECTOR (MEM_ADDR_BUS-1 downto 0);
+             dmem_address_wr : out std_logic_VECTOR (MEM_ADDR_BUS-1 downto 0);
+             dmem_data_out : out std_logic_VECTOR (MEM_DATA_BUS-1 downto 0);
+             dmem_write_enable: out std_logic
          );
 end processor;
 
@@ -31,11 +31,11 @@ architecture Behavioral of processor is
                     FUNCTION_SIZE : integer := FUNCTION_SIZE
                 );
         port (
-                 x			: in signed(WORD_SIZE-1 downto 0);
-                 y			: in signed(WORD_SIZE-1 downto 0);
-                 func	    : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
-                 r			: out signed(WORD_SIZE-1 downto 0);
-                 flags		: out alu_flags
+                 x : in signed(WORD_SIZE-1 downto 0);
+                 y : in signed(WORD_SIZE-1 downto 0);
+                 func : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
+                 r : out signed(WORD_SIZE-1 downto 0);
+                 flags : out alu_flags
              );
     end component;
 
@@ -44,26 +44,26 @@ architecture Behavioral of processor is
                     n: integer := MEM_ADDR_COUNT
                 );
         port (
-                 clk     : in std_logic;
-                 pc_in   : in  std_logic_VECTOR (N-1 downto 0);
+                 clk : in std_logic;
+                 pc_in : in std_logic_VECTOR (N-1 downto 0);
                  reset : in std_logic;
                  pc_enable : in std_logic;
-                 pc_out  : out  std_logic_VECTOR (N-1 downto 0)
+                 pc_out  : out std_logic_VECTOR (N-1 downto 0)
              );
     end component;
 
     -- the Registers block
     component register_file is
         port (
-                 clk 			:	in	std_logic;
-                 reset			:	in	std_logic;
-                 rw				:	in	std_logic;
-                 rs_addr 		:	in	std_logic_VECTOR (RADDR_BUS-1 downto 0); 
-                 rt_addr 		:	in	std_logic_VECTOR (RADDR_BUS-1 downto 0); 
-                 rd_addr 		:	in	std_logic_VECTOR (RADDR_BUS-1 downto 0);
-                 write_data		:	in	std_logic_VECTOR (DDATA_BUS-1 downto 0); 
-                 rs				:	out	std_logic_VECTOR (DDATA_BUS-1 downto 0);
-                 rt				:	out	std_logic_VECTOR (DDATA_BUS-1 downto 0)
+                 clk : in std_logic;
+                 reset : in std_logic;
+                 rw : in std_logic;
+                 rs_addr : in std_logic_VECTOR (RADDR_BUS-1 downto 0);
+                 rt_addr : in std_logic_VECTOR (RADDR_BUS-1 downto 0);
+                 rd_addr : in std_logic_VECTOR (RADDR_BUS-1 downto 0);
+                 write_data : in std_logic_VECTOR (DDATA_BUS-1 downto 0); 
+                 rs : out std_logic_VECTOR (DDATA_BUS-1 downto 0);
+                 rt : out std_logic_VECTOR (DDATA_BUS-1 downto 0)
              );
     end component;
 
@@ -101,9 +101,9 @@ architecture Behavioral of processor is
                 );
         port (
                  mux_enable : in std_logic;
-                 mux_in_0 : in  std_logic_VECTOR (N-1 downto 0);
-                 mux_in_1 : in  std_logic_VECTOR (N-1 downto 0);
-                 mux_out : out  std_logic_VECTOR (N-1 downto 0)
+                 mux_in_0 : in std_logic_VECTOR (N-1 downto 0);
+                 mux_in_1 : in std_logic_VECTOR (N-1 downto 0);
+                 mux_out : out std_logic_VECTOR (N-1 downto 0)
              );
     end component mux; --end multiplexorz 
 
@@ -281,9 +281,9 @@ begin
 
     main_register_file: register_file
     port map (
-                 clk => clk,				
+                 clk => clk
                  reset => reset,
-                 rw	=> register_write,
+                 rw=> register_write,
                  rs_addr => instruction_register_addr_1,
                  rt_addr => instruction_register_addr_2,
                  rd_addr => mux_register_destination_out,
