@@ -9,31 +9,6 @@ ENTITY tb_control_unit IS
 END tb_control_unit;
  
 ARCHITECTURE behavior OF tb_control_unit IS 
- 
-    -- Component Declaration for the Unit Under Test (UUT)
- 
-    COMPONENT control_unit
-    generic (
-        OPCODE_SIZE : integer := OPCODE_SIZE;
-        FUNCTION_SIZE : integer := FUNCTION_SIZE
-    );
-    PORT(
-         clock : IN  std_logic;
-         instruction_opcode : IN  std_logic_vector(OPCODE_SIZE-1 downto 0);
-         instruction_func : IN  std_logic_vector(FUNCTION_SIZE-1 downto 0);
-         processor_enable : IN  std_logic;
-         reset : IN  std_logic;
-         register_destination : OUT  std_logic;
-         memory_to_register : OUT  std_logic;
-         alu_func : OUT  std_logic_vector(FUNCTION_SIZE-1 downto 0);
-         memory_write : OUT  std_logic;
-         alu_source : OUT  std_logic;
-         register_write : OUT  std_logic;
-         pc_enable : OUT  std_logic;
-         jump : OUT  std_logic;
-         shift_swap : OUT  std_logic
-        );
-    END COMPONENT;
 
    --Inputs
    signal clock : std_logic := '0';
@@ -59,7 +34,12 @@ ARCHITECTURE behavior OF tb_control_unit IS
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: control_unit PORT MAP (
+   uut: entity work.control_unit 
+    generic map (
+        OPCODE_SIZE => OPCODE_SIZE,
+        FUNCTION_SIZE => FUNCTION_SIZE
+    )
+   PORT MAP (
           clock => clock,
           instruction_opcode => instruction_opcode,
           instruction_func => instruction_func,

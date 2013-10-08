@@ -4,30 +4,12 @@ use ieee.numeric_std.all;
 use work.mips_constant_pkg.all;
 use work.opcodes.all;
 use work.test_utils.all;
-
  
 ENTITY tb_branch_controller IS
 END tb_branch_controller;
  
 ARCHITECTURE behavior OF tb_branch_controller IS 
  
-    -- Component Declaration for the Unit Under Test (UUT)
- 
-    COMPONENT branch_controller
-    generic (
-        WORD_SIZE : integer := WORD_SIZE;
-        OPCODE_SIZE : integer := OPCODE_SIZE
-    );
-    PORT(
-         flags : IN  alu_flags;
-         instruction_opcode : IN  std_logic_vector(OPCODE_SIZE-1 downto 0);
-         compare_zero_value : OUT  std_logic_vector(WORD_SIZE-1 downto 0);
-         compare_zero : OUT  std_logic;
-         branch : OUT  std_logic
-        );
-    END COMPONENT;
-    
-
    --Inputs
    signal flags : alu_flags;
    signal instruction_opcode : std_logic_vector(OPCODE_SIZE-1 downto 0) := (others => '0');
@@ -44,7 +26,12 @@ ARCHITECTURE behavior OF tb_branch_controller IS
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: branch_controller PORT MAP (
+   uut: entity work.branch_controller 
+   generic map (
+        WORD_SIZE => WORD_SIZE,
+        OPCODE_SIZE => OPCODE_SIZE
+    )
+   PORT MAP (
           flags => flags,
           instruction_opcode => instruction_opcode,
           compare_zero_value => compare_zero_value,

@@ -5,25 +5,10 @@ use work.mips_constant_pkg.all;
 use work.opcodes.all;
 use work.test_utils.all;
 
-
 entity tb_alu is
-    end tb_alu;
+end tb_alu;
 
 architecture behavior of tb_alu is 
-
-    component alu
-        generic(
-                   WORD_SIZE : integer := WORD_SIZE;
-                   FUNCTION_SIZE : integer := FUNCTION_SIZE
-               );
-        PORT(
-                x : in  signed(WORD_SIZE-1 downto 0);
-                y : in  signed(WORD_SIZE-1 downto 0);
-                r : out  signed(WORD_SIZE-1 downto 0);
-                func : in  std_logic_vector(FUNCTION_SIZE-1 downto 0);
-                flags : out  alu_flags
-            );
-    END COMPONENT;
 
    --Inputs
     signal clk : std_logic := '0';
@@ -40,7 +25,12 @@ architecture behavior of tb_alu is
 
 BEGIN
 
-    uut: alu PORT MAP (
+    uut: entity work.alu 
+    generic map (
+                   WORD_SIZE => WORD_SIZE,
+                   FUNCTION_SIZE => FUNCTION_SIZE
+               );
+    PORT MAP (
                           x => x,
                           y => y,
                           r => r,

@@ -9,22 +9,6 @@ ENTITY tb_processor IS
 END tb_processor;
  
 ARCHITECTURE behavior OF tb_processor IS 
- 
-    COMPONENT processor
-    PORT(
-         clk : IN  std_logic;
-         reset : IN  std_logic;
-         processor_enable : IN  std_logic;
-         imem_data_in : IN  std_logic_vector(IDATA_BUS-1 downto 0);
-         dmem_data_in : IN  std_logic_vector(DDATA_BUS-1 downto 0);
-         imem_address : OUT  std_logic_vector(IADDR_BUS-1 downto 0);
-         dmem_address : OUT  std_logic_vector(DADDR_BUS-1 downto 0);
-         dmem_address_wr : OUT  std_logic_vector(DADDR_BUS-1 downto 0);
-         dmem_data_out : OUT  std_logic_vector(DDATA_BUS-1 downto 0);
-         dmem_write_enable : OUT  std_logic
-        );
-    END COMPONENT;
-    
 
    --Inputs
    signal clk : std_logic := '0';
@@ -46,7 +30,8 @@ ARCHITECTURE behavior OF tb_processor IS
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: processor PORT MAP (
+   uut: entity work.processor
+   PORT MAP (
           clk => clk,
           reset => reset,
           processor_enable => processor_enable,
