@@ -25,101 +25,101 @@ end processor;
 
 architecture Behavioral of processor is
 
-    component alu is
-        generic (
-                    WORD_SIZE : integer := WORD_SIZE;
-                    FUNCTION_SIZE : integer := FUNCTION_SIZE
-                );
-        port (
-                 x : in signed(WORD_SIZE-1 downto 0);
-                 y : in signed(WORD_SIZE-1 downto 0);
-                 func : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
-                 r : out signed(WORD_SIZE-1 downto 0);
-                 flags : out alu_flags
-             );
-    end component;
-
-    component pc is
-        generic (
-                    n: integer := MEM_ADDR_COUNT
-                );
-        port (
-                 clk : in std_logic;
-                 pc_in : in std_logic_VECTOR (N-1 downto 0);
-                 reset : in std_logic;
-                 pc_enable : in std_logic;
-                 pc_out  : out std_logic_VECTOR (N-1 downto 0)
-             );
-    end component;
-
-    -- the Registers block
-    component register_file is
-        port (
-                 clk : in std_logic;
-                 reset : in std_logic;
-                 rw : in std_logic;
-                 rs_addr : in std_logic_VECTOR (RADDR_BUS-1 downto 0);
-                 rt_addr : in std_logic_VECTOR (RADDR_BUS-1 downto 0);
-                 rd_addr : in std_logic_VECTOR (RADDR_BUS-1 downto 0);
-                 write_data : in std_logic_VECTOR (DDATA_BUS-1 downto 0); 
-                 rs : out std_logic_VECTOR (DDATA_BUS-1 downto 0);
-                 rt : out std_logic_VECTOR (DDATA_BUS-1 downto 0)
-             );
-    end component;
-
-
-     -- the control unit
-    component control_unit is
-        generic (
-                    OPCODE_SIZE : integer := OPCODE_SIZE;
-                    FUNCTION_SIZE : integer := FUNCTION_SIZE
-                );
-        port (
-                 clock : in std_logic;
-                 instruction_opcode : in std_logic_vector(OPCODE_SIZE-1 downto 0);
-                 instruction_func : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
-                 reset : in std_logic;
-                 processor_enable : in std_logic;
-
-                 register_destination : out std_logic;
-                 memory_to_register : out std_logic;
-                 memory_write : out std_logic; 
-                 alu_func : out std_logic_vector(FUNCTION_SIZE-1 downto 0);
-                 alu_source : out std_logic;
-                 register_write : out std_logic;
-                 pc_enable : out std_logic;
-                 jump : out std_logic;
-                 shift_swap : out std_logic
-             );
-    end component control_unit;
-
-     -- all the multiplexors
-     -- (all them multiplexors)
-    component mux is
-        generic (
-                    n: natural := MEM_DATA_BUS
-                );
-        port (
-                 mux_enable : in std_logic;
-                 mux_in_0 : in std_logic_VECTOR (N-1 downto 0);
-                 mux_in_1 : in std_logic_VECTOR (N-1 downto 0);
-                 mux_out : out std_logic_VECTOR (N-1 downto 0)
-             );
-    end component mux; --end multiplexorz 
-
-    component branch_controller is
-        generic (
-                    OPCODE_SIZE : integer := OPCODE_SIZE;
-                    WORD_SIZE : integer := WORD_SIZE
-                );
-        port (
-                 flags : in alu_flags;
-                 instruction_opcode : in std_logic_vector(OPCODE_SIZE-1 downto 0);
-                 branch : out std_logic;
-                 compare_zero : out std_logic;
-                 compare_zero_value : out std_logic_vector(WORD_SIZE-1 downto 0)
-             );
-    end component branch_controller;
+--    component alu is
+--        generic (
+--                    WORD_SIZE : integer := WORD_SIZE;
+--                    FUNCTION_SIZE : integer := FUNCTION_SIZE
+--                );
+--        port (
+--                 x : in signed(WORD_SIZE-1 downto 0);
+--                 y : in signed(WORD_SIZE-1 downto 0);
+--                 func : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
+--                 r : out signed(WORD_SIZE-1 downto 0);
+--                 flags : out alu_flags
+--             );
+--    end component;
+--
+--    component pc is
+--        generic (
+--                    n: integer := MEM_ADDR_COUNT
+--                );
+--        port (
+--                 clk : in std_logic;
+--                 pc_in : in std_logic_VECTOR (N-1 downto 0);
+--                 reset : in std_logic;
+--                 pc_enable : in std_logic;
+--                 pc_out  : out std_logic_VECTOR (N-1 downto 0)
+--             );
+--    end component;
+--
+--    -- the Registers block
+--    component register_file is
+--        port (
+--                 clk : in std_logic;
+--                 reset : in std_logic;
+--                 rw : in std_logic;
+--                 rs_addr : in std_logic_VECTOR (RADDR_BUS-1 downto 0);
+--                 rt_addr : in std_logic_VECTOR (RADDR_BUS-1 downto 0);
+--                 rd_addr : in std_logic_VECTOR (RADDR_BUS-1 downto 0);
+--                 write_data : in std_logic_VECTOR (DDATA_BUS-1 downto 0); 
+--                 rs : out std_logic_VECTOR (DDATA_BUS-1 downto 0);
+--                 rt : out std_logic_VECTOR (DDATA_BUS-1 downto 0)
+--             );
+--    end component;
+--
+--
+--     -- the control unit
+--    component control_unit is
+--        generic (
+--                    OPCODE_SIZE : integer := OPCODE_SIZE;
+--                    FUNCTION_SIZE : integer := FUNCTION_SIZE
+--                );
+--        port (
+--                 clock : in std_logic;
+--                 instruction_opcode : in std_logic_vector(OPCODE_SIZE-1 downto 0);
+--                 instruction_func : in std_logic_vector(FUNCTION_SIZE-1 downto 0);
+--                 reset : in std_logic;
+--                 processor_enable : in std_logic;
+--
+--                 register_destination : out std_logic;
+--                 memory_to_register : out std_logic;
+--                 memory_write : out std_logic; 
+--                 alu_func : out std_logic_vector(FUNCTION_SIZE-1 downto 0);
+--                 alu_source : out std_logic;
+--                 register_write : out std_logic;
+--                 pc_enable : out std_logic;
+--                 jump : out std_logic;
+--                 shift_swap : out std_logic
+--             );
+--    end component control_unit;
+--
+--     -- all the multiplexors
+--     -- (all them multiplexors)
+--    component mux is
+--        generic (
+--                    n: natural := MEM_DATA_BUS
+--                );
+--        port (
+--                 mux_enable : in std_logic;
+--                 mux_in_0 : in std_logic_VECTOR (N-1 downto 0);
+--                 mux_in_1 : in std_logic_VECTOR (N-1 downto 0);
+--                 mux_out : out std_logic_VECTOR (N-1 downto 0)
+--             );
+--    end component mux; --end multiplexorz 
+--
+--    component branch_controller is
+--        generic (
+--                    OPCODE_SIZE : integer := OPCODE_SIZE;
+--                    WORD_SIZE : integer := WORD_SIZE
+--                );
+--        port (
+--                 flags : in alu_flags;
+--                 instruction_opcode : in std_logic_vector(OPCODE_SIZE-1 downto 0);
+--                 branch : out std_logic;
+--                 compare_zero : out std_logic;
+--                 compare_zero_value : out std_logic_vector(WORD_SIZE-1 downto 0)
+--             );
+--    end component branch_controller;
 
      -- "Registers" read data signals
     signal read_data_1 : std_logic_vector (MEM_DATA_BUS-1 downto 0);
@@ -173,7 +173,11 @@ architecture Behavioral of processor is
 
 begin
 
-    main_control_unit: control_unit
+    main_control_unit: entity work.control_unit
+    generic map(
+                    OPCODE_SIZE => OPCODE_SIZE,
+                    FUNCTION_SIZE => FUNCTION_SIZE
+                )
     port map (
                  reset => reset,
                  clock => CLK,
@@ -193,7 +197,11 @@ begin
 
              );
 
-    main_branch_controller: branch_controller
+    main_branch_controller: entity work.branch_controller
+    generic map(
+                 OPCODE_SIZE => OPCODE_SIZE,
+                 WORD_SIZE => WORD_SIZE
+                )
     port map (
                  flags => alu_flags,
                  instruction_opcode => instruction_opcode,
@@ -202,8 +210,12 @@ begin
                  compare_zero_value => compare_zero_value
              );
 
-    main_alu:   alu
+    main_alu: entity work.alu
         -- the ALU between Registers and Data memory on the suggested architecture
+    generic map(
+                 WORD_SIZE => WORD_SIZE, 
+                 FUNCTION_SIZE => FUNCTION_SIZE
+             )
     port map (
                  x => signed(mux_shift_swap_out),
                  y => signed(mux_alu_source_zero_override_out),
@@ -212,7 +224,8 @@ begin
                  func => alu_func
              );
 
-    main_pc: pc generic map (n=>MEM_ADDR_COUNT)
+    main_pc: entity work.pc 
+	 generic map (n=>MEM_ADDR_COUNT)
     port map (
                  clk => clk,
                  pc_in => mux_jump_out(MEM_ADDR_COUNT-1 downto 0),
@@ -221,7 +234,8 @@ begin
                  reset => reset
              );
 
-    mux_shift_swap: mux generic map (N => 32)
+    mux_shift_swap: entity work.mux 
+	 generic map (N => 32)
     port map (
                  mux_enable => shift_swap,
                  mux_in_0 => read_data_1,
@@ -229,7 +243,8 @@ begin
                  mux_out => mux_shift_swap_out
              );
 
-    mux_register_destination: mux generic map (n => 5)
+    mux_register_destination: entity work.mux 
+	 generic map (n => 5)
     port map (
                  mux_enable => register_destination,
                  mux_in_0 => instruction_register_addr_2,
@@ -237,7 +252,8 @@ begin
                  mux_out => mux_register_destination_out
              );
 
-    mux_memory_to_register: mux generic map (n => 32)
+    mux_memory_to_register: entity work.mux 
+	 generic map (n => 32)
     port map (
                  mux_enable => memory_to_register,
                  mux_in_0 => std_logic_vector(alu1_result),
@@ -246,7 +262,8 @@ begin
              );
 
 
-    mux_alu_source: mux generic map (n => 32)
+    mux_alu_source: entity work.mux 
+	 generic map (n => 32)
     port map (
                  mux_enable => alu_source,
                  mux_in_0 => read_data_2,
@@ -254,7 +271,8 @@ begin
                  mux_out => mux_alu_source_out
              );
 
-    mux_alu_source_zero_override: mux generic map (n => 32)
+    mux_alu_source_zero_override: entity work.mux 
+	 generic map (n => 32)
     port map (
                  mux_enable => compare_zero,
                  mux_in_0 => mux_alu_source_out,
@@ -263,7 +281,7 @@ begin
              );
 
 
-    mux_branch: mux generic map (n => 32)
+    mux_branch: entity work.mux generic map (n => 32)
     port map (
                  mux_enable => branch,
                  mux_in_0 => mux_branch_in_0,
@@ -271,7 +289,7 @@ begin
                  mux_out => mux_branch_out
              );
 
-    mux_jump: mux generic map (n => 32)
+    mux_jump: entity work.mux generic map (n => 32)
     port map (
                  mux_enable => jump,
                  mux_in_0 => mux_branch_out,
@@ -279,9 +297,9 @@ begin
                  mux_out => mux_jump_out
              );
 
-    main_register_file: register_file
+    main_register_file: entity work.register_file
     port map (
-                 clk => clk
+                 clk => clk,
                  reset => reset,
                  rw=> register_write,
                  rs_addr => instruction_register_addr_1,
