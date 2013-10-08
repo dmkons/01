@@ -17,7 +17,7 @@ entity control_unit is
              reset : in std_logic;
              register_destination : out std_logic;
              memory_to_register : out std_logic;
-             alu_func : out std_logic_vector(FUnCTION_SIZE-1 downto 0);
+             alu_func : out std_logic_vector(FUNCTION_SIZE-1 downto 0);
              memory_write : out std_logic; 
              alu_source : out std_logic;
              register_write : out std_logic;
