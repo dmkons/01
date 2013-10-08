@@ -187,7 +187,7 @@ BEGIN
 			test("ADDI", "execute ADDI shift_swap", shift_swap, '0');
 			test("ADDI", "execute ADDI jump", jump, '0');
 			test("ADDI", "execute ADDI pc_enable", pc_enable, '1');
-			test("ADDI", "execute ADDI alu_func", alu_func, FUNCTION_PASSTHROUGH);  
+			test("ADDI", "execute ADDI alu_func", alu_func, FUNCTION_ADD);
 			wait for clock_period*0.5;
 	
 				
