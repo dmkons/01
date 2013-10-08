@@ -109,8 +109,10 @@ BEGIN
     stim_proc: process
     begin		
 
-    -- hold reset state for 20 ns.
-        wait for 20 ns;	
+    -- hold reset state for 200 ns.
+        reset <= '1';
+        wait for 200 ns;
+        reset <= '0';
 
         -- insert stimulus here 
 

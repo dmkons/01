@@ -68,7 +68,7 @@ begin
         write_addr       <= (others => '0');
         write_data       <= (others => '0');
         write_enable     <= '0';
-        processor_enable <= '0';
+        processor_enable <= '1';
         write_imem       <= '0';
         internal_data_out <= (others => '0');
       else

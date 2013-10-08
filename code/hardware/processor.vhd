@@ -36,7 +36,7 @@ architecture Behavioral of processor is
     signal alu_flags : alu_flags;
 
      -- PC signals
-    signal pc_in, pc_out : std_logic_vector(MEM_ADDR_COUNT-1 downto 0);
+    signal pc_out : std_logic_vector(MEM_ADDR_COUNT-1 downto 0);
     signal pc_enable : std_logic;
 
     -- Defining aliases for the different parts of the instruction signal
@@ -49,9 +49,9 @@ architecture Behavioral of processor is
     alias instruction_func is imem_data_in(5 downto 0);
 
      -- Control unit signals, see fig 4.2 in the compendium
-    signal register_destination, memory_read,
+    signal register_destination,
     memory_write, memory_to_register, 
-    alu_operation, alu_source, register_write,
+    alu_source, register_write,
     jump, shift_swap : std_logic;
 
      -- Branch controller signals
@@ -68,7 +68,6 @@ architecture Behavioral of processor is
     signal mux_jump_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
     signal mux_alu_source_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
     signal mux_alu_source_zero_override_out : std_logic_vector(MEM_DATA_BUS-1 downto 0);
-    signal mux_branch_enable : std_logic;
 
     signal jump_address : std_logic_vector(MEM_DATA_BUS-1 downto 0);
 
