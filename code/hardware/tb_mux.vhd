@@ -1,13 +1,13 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
 use work.mips_constant_pkg.all;
 use work.opcodes.all;
 use work.test_utils.all;
  
-ENTITY tb_mux IS
-END tb_mux;
+entity tb_mux is
+end tb_mux;
  
-ARCHITECTURE behavior OF tb_mux IS 
+architecture behavior of tb_mux is 
 
    --Inputs
    signal mux_enable : std_logic := '0';
@@ -19,12 +19,12 @@ ARCHITECTURE behavior OF tb_mux IS
 
    constant clk_period : time := 10 ns;
  
-BEGIN
+begin
  
 	-- Instantiate the Unit Under Test (UUT)
    uut: entity work.mux 
        generic map (n => 32)
-       PORT MAP (
+       port map (
           mux_enable => mux_enable,
           mux_in_0 => mux_in_0,
           mux_in_1 => mux_in_1,
@@ -67,4 +67,4 @@ BEGIN
       wait;
    end process;
 
-END;
+end;

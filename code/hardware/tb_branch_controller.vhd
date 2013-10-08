@@ -1,14 +1,14 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.mips_constant_pkg.all;
 use work.opcodes.all;
 use work.test_utils.all;
 
-ENTITY tb_branch_controller IS
-    END tb_branch_controller;
+entity tb_branch_controller is
+    end tb_branch_controller;
 
-ARCHITECTURE behavior OF tb_branch_controller IS 
+architecture behavior of tb_branch_controller is 
 
    --Inputs
     signal flags : alu_flags;
@@ -21,7 +21,7 @@ ARCHITECTURE behavior OF tb_branch_controller IS
 
     constant clk_period : time := 10 ns;
 
-BEGIN
+begin
 
    -- Instantiate the Unit Under Test (UUT)
     uut: entity work.branch_controller 
@@ -29,7 +29,7 @@ BEGIN
                     WORD_SIZE => WORD_SIZE,
                     OPCODE_SIZE => OPCODE_SIZE
                 )
-    PORT MAP (
+    port map (
                  flags => flags,
                  instruction_opcode => instruction_opcode,
                  compare_zero_value => compare_zero_value,
@@ -142,4 +142,4 @@ BEGIN
         wait;
     end process;
 
-END;
+end;

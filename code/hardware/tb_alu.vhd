@@ -1,5 +1,5 @@
 library ieee;
-use ieee.std_logic_1164.ALL;
+use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.mips_constant_pkg.all;
 use work.opcodes.all;
@@ -23,14 +23,14 @@ architecture behavior of tb_alu is
     -- Clock period definitions
     constant clk_period : time := 10 ns;
 
-BEGIN
+begin
 
     uut: entity work.alu 
     generic map (
                     WORD_SIZE => WORD_SIZE,
                     FUNCTION_SIZE => FUNCTION_SIZE
                 )
-    PORT MAP (
+    port map (
                  x => x,
                  y => y,
                  r => r,
@@ -336,4 +336,4 @@ BEGIN
         wait;
     end process;
 
-END;
+end;

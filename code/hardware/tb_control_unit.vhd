@@ -1,14 +1,14 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.mips_constant_pkg.all;
 use work.opcodes.all;
 use work.test_utils.all;
 
-ENTITY tb_control_unit IS
-    END tb_control_unit;
+entity tb_control_unit is
+    end tb_control_unit;
 
-ARCHITECTURE behavior OF tb_control_unit IS 
+architecture behavior of tb_control_unit is 
 
    --Inputs
     signal clock : std_logic := '0';
@@ -31,7 +31,7 @@ ARCHITECTURE behavior OF tb_control_unit IS
    -- Clock period definitions
     constant clock_period : time := 10 ns;
 
-BEGIN
+begin
 
    -- Instantiate the Unit Under Test (UUT)
     uut: entity work.control_unit 
@@ -39,7 +39,7 @@ BEGIN
                     OPCODE_SIZE => OPCODE_SIZE,
                     FUNCTION_SIZE => FUNCTION_SIZE
                 )
-    PORT MAP (
+    port map (
                  clock => clock,
                  instruction_opcode => instruction_opcode,
                  instruction_func => instruction_func,
@@ -79,7 +79,7 @@ BEGIN
         reset <= '1';
         wait for clock_period*10;
         reset <= '0';
-        instruction_opcode <= OPCODE_R_ALL;
+        instruction_opcode <= OPCODE_R_all;
         instruction_func <= FUNCTION_ADD;
         wait for clock_period*3;
         wait for clock_period*0.5;
@@ -258,49 +258,49 @@ BEGIN
         test("J", "execute J alu_func", alu_func, FUNCTION_PASSTHROUGH);
         wait for clock_period*0.5;
 
-            -- Test R_ALL & instruction_function != FUNCTION_SLL | FUNCTION_SRL => 
+            -- Test R_all & instruction_function != FUNCTION_SLL | FUNCTION_SRL => 
             -- register_destination = register_write = 1 and shift_swap = 0
         processor_enable <= '1';
         reset <= '1';
         wait for clock_period;
         reset <= '0';
-        instruction_opcode <= OPCODE_R_ALL;
+        instruction_opcode <= OPCODE_R_all;
         instruction_func <= FUNCTION_ADD;
         wait for clock_period;
         wait for clock_period*0.5;
-        test("ALL!SH", "execute ADD and no shift register_destination", register_destination, '1');
-        test("ALL!SH", "execute ADD and no shift memory_to_register", memory_to_register, '0');
-        test("ALL!SH", "execute ADD and no shift memory_write", memory_write, '0');
-        test("ALL!SH", "execute ADD and no shift alu_source", alu_source, '0');
-        test("ALL!SH", "execute ADD and no shift register_write", register_write, '1');
-        test("ALL!SH", "execute ADD and no shift shift_swap", shift_swap, '0');
-        test("ALL!SH", "execute ADD and no shift jump", jump, '0');
-        test("ALL!SH", "execute ADD and no shift pc_enable", pc_enable, '1');
-        test("ALL!SH", "execute ADD and no shift alu_func", alu_func, FUNCTION_ADD);
+        test("all!SH", "execute ADD and no shift register_destination", register_destination, '1');
+        test("all!SH", "execute ADD and no shift memory_to_register", memory_to_register, '0');
+        test("all!SH", "execute ADD and no shift memory_write", memory_write, '0');
+        test("all!SH", "execute ADD and no shift alu_source", alu_source, '0');
+        test("all!SH", "execute ADD and no shift register_write", register_write, '1');
+        test("all!SH", "execute ADD and no shift shift_swap", shift_swap, '0');
+        test("all!SH", "execute ADD and no shift jump", jump, '0');
+        test("all!SH", "execute ADD and no shift pc_enable", pc_enable, '1');
+        test("all!SH", "execute ADD and no shift alu_func", alu_func, FUNCTION_ADD);
         wait for clock_period*0.5;
 
-            -- Test R_ALL & instruction_function = FUNCTION_SLL | FUNCTION_SRL => 
+            -- Test R_all & instruction_function = FUNCTION_SLL | FUNCTION_SRL => 
             -- register_destination = register_write = shift_swap = 1
         processor_enable <= '1';
         reset <= '1';
         wait for clock_period;
         reset <= '0';
-        instruction_opcode <= OPCODE_R_ALL;
+        instruction_opcode <= OPCODE_R_all;
         instruction_func <= FUNCTION_SLL;
         wait for clock_period;
         wait for clock_period*0.5;
-        test("ALLSH", "execute ADD and shift register_destination", register_destination, '1');
-        test("ALLSH", "execute ADD and shift memory_to_register", memory_to_register, '0');
-        test("ALLSH", "execute ADD and shift memory_write", memory_write, '0');
-        test("ALLSH", "execute ADD and shift alu_source", alu_source, '0');
-        test("ALLSH", "execute ADD and shift register_write", register_write, '1');
-        test("ALLSH", "execute ADD and shift shift_swap", shift_swap, '1');
-        test("ALLSH", "execute ADD and shift jump", jump, '0');
-        test("ALLSH", "execute ADD and shift pc_enable", pc_enable, '1');
-        test("ALLSH", "execute ADD and shift alu_func", alu_func, FUNCTION_SLL);
+        test("allSH", "execute ADD and shift register_destination", register_destination, '1');
+        test("allSH", "execute ADD and shift memory_to_register", memory_to_register, '0');
+        test("allSH", "execute ADD and shift memory_write", memory_write, '0');
+        test("allSH", "execute ADD and shift alu_source", alu_source, '0');
+        test("allSH", "execute ADD and shift register_write", register_write, '1');
+        test("allSH", "execute ADD and shift shift_swap", shift_swap, '1');
+        test("allSH", "execute ADD and shift jump", jump, '0');
+        test("allSH", "execute ADD and shift pc_enable", pc_enable, '1');
+        test("allSH", "execute ADD and shift alu_func", alu_func, FUNCTION_SLL);
         wait for clock_period*0.5;
 
         wait;
     end process;
 
-END;
+end;
